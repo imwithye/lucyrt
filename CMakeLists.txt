@@ -4,7 +4,8 @@ project(lucyrt)
 include_directories(
   vendors/glad-3.3/include/
   vendors/glfw-3.3/include/
-  src/Sources)
+  vendors/imgui-1.73/
+  src/Sources/)
 add_subdirectory(vendors)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -fvisibility=hidden -std=c++11")
