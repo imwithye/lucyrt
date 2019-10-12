@@ -4,6 +4,7 @@ project(lucyrt)
 include_directories(
   vendors/glad-3.3/include/
   vendors/glfw-3.3/include/
+  vendors/glm-0.9.9.6/
   vendors/imgui-1.73/
   src/Sources/)
 add_subdirectory(vendors)
