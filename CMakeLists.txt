@@ -9,8 +9,8 @@ add_subdirectory(vendors)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -fvisibility=hidden -std=c++11")
 
-file(GLOB PROJECT_SOURCES src/Sources/*.cc)
-file(GLOB PROJECT_RESOURCES src/Shaders/*.vert
+file(GLOB_RECURSE PROJECT_SOURCES src/Sources/*.cc)
+file(GLOB_RECURSE PROJECT_RESOURCES src/Shaders/*.vert
   src/Shaders/*.frag
   src/Shaders/*.geom
   src/Shaders/*.comp)
