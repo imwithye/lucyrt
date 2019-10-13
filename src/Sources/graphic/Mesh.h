@@ -10,6 +10,7 @@
 #include "Component.h"
 #include "GL.h"
 #include "Program.h"
+#include "TransformationMatrix.h"
 
 namespace lucyrt {
 namespace graphic {
@@ -30,6 +31,7 @@ class Mesh final : public Component {
  public:
   std::vector<Vertex> vertices;
   std::vector<GLuint> indices;
+  TransformationMatrix transform;
 
   static MeshRef New(const std::string &name);
   bool Initialize();
