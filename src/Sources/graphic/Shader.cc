@@ -1,8 +1,6 @@
 // Copyright 2019
 #include "Shader.h"
 
-#include "GL.h"
-
 using lucyrt::graphic::Shader;
 using lucyrt::graphic::ShaderRef;
 using lucyrt::graphic::ShaderTypes;

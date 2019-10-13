@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include "Component.h"
+#include "GL.h"
 
 namespace lucyrt {
 namespace graphic {
@@ -15,14 +16,14 @@ typedef std::shared_ptr<Shader> ShaderRef;
 class Shader : public Component {
  public:
   static ShaderRef New(const std::string &code, ShaderTypes shader_type);
-  inline int GetId() const { return id_; }
+  inline GLuint GetId() const { return id_; }
   inline ShaderTypes GetShaderType() const { return shader_type_; }
   virtual bool Initialize();
   virtual void Delete();
   virtual ~Shader();
 
  private:
-  int id_;
+  GLuint id_;
   std::string code_;
   ShaderTypes shader_type_;
 

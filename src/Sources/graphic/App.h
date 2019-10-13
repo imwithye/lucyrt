@@ -17,14 +17,15 @@ class App {
   void operator=(App const &) = delete;
 
   static ContextRef GetContext();
-  static bool Initialize(int width, int height, const std::string &title);
+  static bool Initialize(GLuint width, GLuint height, const std::string &title);
   static void Run(std::function<void(Context &)> loop);
 
  private:
   ContextRef ctx_;
 
   App() : ctx_(nullptr) {}
-  static void framebufferSizeCallback(void *window, int width, int height);
+  static void framebufferSizeCallback(GLFWwindow *window, int width,
+                                      int height);
 };
 }  // namespace graphic
 }  // namespace lucyrt

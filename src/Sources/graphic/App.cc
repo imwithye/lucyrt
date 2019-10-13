@@ -9,7 +9,7 @@ using lucyrt::graphic::ContextRef;
 
 ContextRef App::GetContext() { return App::GetInstance().ctx_; }
 
-bool App::Initialize(int width, int height, const std::string &title) {
+bool App::Initialize(GLuint width, GLuint height, const std::string &title) {
   App &app = App::GetInstance();
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -25,12 +25,9 @@ bool App::Initialize(int width, int height, const std::string &title) {
   if (!ctx->Initialize()) {
     return false;
   }
-  GLFWwindow *window = reinterpret_cast<GLFWwindow *>(ctx->window_);
-  glfwSetFramebufferSizeCallback(
-      window,
-      reinterpret_cast<GLFWframebuffersizefun>(framebufferSizeCallback));
+  glfwSetFramebufferSizeCallback(ctx->window_, framebufferSizeCallback);
   // glfwSetCursorPosCallback(window, Input::glfwMouseCallback);
-  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+  glfwSetInputMode(ctx->window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
   app.ctx_ = ctx;
   return true;
 }
@@ -41,7 +38,7 @@ void App::Run(std::function<void(Context &)> loop) {
   }
 }
 
-void App::framebufferSizeCallback(void *window, int width, int height) {
+void App::framebufferSizeCallback(GLFWwindow *window, int width, int height) {
   (void)window;  // unused;
   ContextRef ctx = App::GetContext();
   ctx->width_ = width;

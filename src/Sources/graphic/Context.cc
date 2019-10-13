@@ -1,8 +1,6 @@
 // Copyright 2019
 #include "Context.h"
 
-#include "GL.h"
-
 using lucyrt::graphic::Context;
 
 Context::~Context() { Delete(); }
@@ -11,7 +9,7 @@ bool Context::ShouldClose() const {
   return glfwWindowShouldClose(reinterpret_cast<GLFWwindow *>(window_));
 }
 
-Context::Context(int width, int height, const std::string &title)
+Context::Context(GLuint width, GLuint height, const std::string &title)
     : width_(width), height_(height), title_(title) {}
 
 bool Context::Initialize() {
@@ -38,7 +36,7 @@ void Context::Delete() {
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
-  glfwDestroyWindow(reinterpret_cast<GLFWwindow *>(window_));
+  glfwDestroyWindow(window_);
   glfwTerminate();
 }
 
@@ -54,5 +52,5 @@ void Context::Loop(std::function<void(Context &)> loop) {
   loop(*this);
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-  glfwSwapBuffers(reinterpret_cast<GLFWwindow *>(window_));
+  glfwSwapBuffers(window_);
 }

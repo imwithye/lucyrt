@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include "Component.h"
+#include "GL.h"
 
 namespace lucyrt {
 namespace graphic {
@@ -13,24 +14,24 @@ typedef std::shared_ptr<Context> ContextRef;
 
 class Context : public Component {
  public:
-  inline int GetWidth() const { return width_; }
-  inline int GetHeight() const { return height_; }
-  inline float GetAspect() const {
-    return static_cast<float>(GetWidth()) / static_cast<float>(GetHeight());
+  inline GLuint GetWidth() const { return width_; }
+  inline GLuint GetHeight() const { return height_; }
+  inline GLfloat GetAspect() const {
+    return static_cast<GLfloat>(GetWidth()) / static_cast<GLfloat>(GetHeight());
   }
-  inline float GetDeltaTime() const { return deltaTime_; }
+  inline GLfloat GetDeltaTime() const { return deltaTime_; }
   bool ShouldClose() const;
   virtual ~Context();
 
  protected:
-  int width_;
-  int height_;
+  GLuint width_;
+  GLuint height_;
   std::string title_;
-  void *window_;
-  float lastFrame_;
-  float deltaTime_;
+  GLFWwindow *window_;
+  GLfloat lastFrame_;
+  GLfloat deltaTime_;
 
-  Context(int width, int height, const std::string &title);
+  Context(GLuint width, GLuint height, const std::string &title);
   virtual bool Initialize();
   virtual void Delete();
   void Loop(std::function<void(Context &)> loop);
