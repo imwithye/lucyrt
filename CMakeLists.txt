@@ -22,7 +22,7 @@ source_group("Sources" FILES ${PROJECT_SOURCES})
 source_group("Resources" FILES ${PROJECT_RESOURCES})
 
 add_executable(rsgen rsgen.cc)
-set(Resources ${CMAKE_SOURCE_DIR}/src/Sources/rs.h)
+set(Resources ${CMAKE_SOURCE_DIR}/src/Sources/resource/rs.h)
 add_custom_command(OUTPUT ${Resources}
   COMMAND rsgen ${Resources} ${CMAKE_SOURCE_DIR}/src ${PROJECT_RESOURCES}
   DEPENDS ${PROJECT_RESOURCES}

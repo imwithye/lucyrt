@@ -24,8 +24,12 @@ class Program : public Component {
                         const std::string& frag);
   static ProgramRef New(const std::string& name, const std::string& vert,
                         const std::string& frag, const std::string& geom);
+
   inline std::string GetName() const { return name_; }
   inline GLuint GetId() const { return id_; }
+
+  void Use();
+
   virtual bool Initialize();
   virtual void Delete();
   virtual ~Program();

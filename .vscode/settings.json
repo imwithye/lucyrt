@@ -52,7 +52,15 @@
     "stdexcept": "cpp",
     "streambuf": "cpp",
     "cinttypes": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "bitset": "cpp",
+    "condition_variable": "cpp",
+    "map": "cpp",
+    "regex": "cpp",
+    "set": "cpp",
+    "mutex": "cpp",
+    "thread": "cpp",
+    "variant": "cpp"
   },
   "glsllint.glslangValidatorPath": "glslangValidator"
 }

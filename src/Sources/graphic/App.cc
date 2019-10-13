@@ -29,13 +29,16 @@ bool App::Initialize(GLuint width, GLuint height, const std::string &title) {
   // glfwSetCursorPosCallback(window, Input::glfwMouseCallback);
   glfwSetInputMode(ctx->window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
   app.ctx_ = ctx;
+  spdlog::info("App initialized");
   return true;
 }
 
 void App::Run(std::function<void(Context &)> loop) {
+  spdlog::info("App starts main loop");
   while (!GetContext()->ShouldClose()) {
     GetContext()->Loop(loop);
   }
+  spdlog::info("App terminated");
 }
 
 void App::framebufferSizeCallback(GLFWwindow *window, int width, int height) {

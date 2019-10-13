@@ -41,6 +41,8 @@ ProgramRef Program::New(const std::string& name, const std::string& vert,
   return program;
 }
 
+void Program::Use() { glUseProgram(id_); }
+
 bool Program::Initialize() {
   GLuint program_id = glCreateProgram();
   if (vert_) {
