@@ -2,5 +2,6 @@
 #pragma once
 
 #include "App.h"
+#include "Context.h"
 #include "Program.h"
 #include "Shader.h"

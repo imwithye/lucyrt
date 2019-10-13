@@ -4,8 +4,12 @@
 #include "GL.h"
 
 using lucyrt::graphic::App;
+using lucyrt::graphic::Context;
+using lucyrt::graphic::ContextRef;
 
-void App::Init(int width, int height, const std::string &title) {
+ContextRef App::GetContext() { return App::GetInstance().ctx_; }
+
+bool App::Initialize(int width, int height, const std::string &title) {
   App &app = App::GetInstance();
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -17,82 +21,30 @@ void App::Init(int width, int height, const std::string &title) {
       GLFW_OPENGL_FORWARD_COMPAT,
       GL_TRUE);  // uncomment this statement to fix compilation on OS X
 #endif
-
-  app.width = width;
-  app.height = height;
-  GLFWwindow *window =
-      glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-  if (!window) {
-    std::cerr << "Failed to create window" << std::endl;
-    glfwTerminate();
-    exit(EXIT_FAILURE);
+  ContextRef ctx(new Context(width, height, title));
+  if (!ctx->Initialize()) {
+    return false;
   }
-  glfwMakeContextCurrent(window);
-  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    std::cerr << "Failed to initialize GLAD" << std::endl;
-    exit(EXIT_FAILURE);
-  }
-
+  GLFWwindow *window = reinterpret_cast<GLFWwindow *>(ctx->window_);
   glfwSetFramebufferSizeCallback(
       window,
       reinterpret_cast<GLFWframebuffersizefun>(framebufferSizeCallback));
   // glfwSetCursorPosCallback(window, Input::glfwMouseCallback);
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-  glEnable(GL_LINE_SMOOTH);
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_STENCIL_TEST);
-  glEnable(GL_CULL_FACE);
-  glCullFace(GL_BACK);
-
-  IMGUI_CHECKVERSION();
-  ImGui::CreateContext();
-  ImGuiIO &io = ImGui::GetIO();
-  (void)io;
-  ImGui::StyleColorsDark();
-  ImGui_ImplGlfw_InitForOpenGL(window, true);
-  ImGui_ImplOpenGL3_Init("#version 330 core");
-
-  app.window = window;
+  app.ctx_ = ctx;
+  return true;
 }
 
-void App::Run(std::function<void(App &)> loop) {
-  App &app = App::GetInstance();
-  while (!glfwWindowShouldClose(reinterpret_cast<GLFWwindow *>(app.window))) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    glfwPollEvents();
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-    GLdouble currentFrame = glfwGetTime();
-    app.deltaTime = currentFrame - app.lastFrame;
-    app.lastFrame = currentFrame;
-    loop(app);
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    glfwSwapBuffers(reinterpret_cast<GLFWwindow *>(app.window));
+void App::Run(std::function<void(Context &)> loop) {
+  while (!GetContext()->ShouldClose()) {
+    GetContext()->Loop(loop);
   }
-
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
-
-  glfwTerminate();
 }
-
-int App::GetWidth() { return App::GetInstance().width; }
-
-int App::GetHeight() { return App::GetInstance().height; }
-
-float App::GetAspect() {
-  return static_cast<float>(GetWidth()) / static_cast<float>(GetHeight());
-}
-
-float App::GetDeltaTime() { return App::GetInstance().deltaTime; }
 
 void App::framebufferSizeCallback(void *window, int width, int height) {
   (void)window;  // unused;
-  App &app = App::GetInstance();
-  app.width = width;
-  app.height = height;
+  ContextRef ctx = App::GetContext();
+  ctx->width_ = width;
+  ctx->height_ = height;
   glViewport(0, 0, width, height);
 }

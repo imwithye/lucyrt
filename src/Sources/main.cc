@@ -3,9 +3,10 @@
 #include "graphic/graphic.h"
 
 using lucyrt::graphic::App;
+using lucyrt::graphic::Context;
 
 int main() {
-  App::Init(800, 600, "lucyrt");
-  App::Run([](App& app) {});
+  App::Initialize(800, 600, "lucyrt");
+  App::Run([](Context&) {});
   return 0;
 }
