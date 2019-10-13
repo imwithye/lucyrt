@@ -1,6 +1,7 @@
 // Copyright 2019
 #include "Context.h"
 #include "Camera.h"
+#include "GL.h"
 
 using lucyrt::graphic::Context;
 
@@ -11,7 +12,13 @@ bool Context::ShouldClose() const {
 }
 
 Context::Context(GLuint width, GLuint height, const std::string &title)
-    : width_(width), height_(height), title_(title) {}
+    : width_(width),
+      height_(height),
+      title_(title),
+      window_(nullptr),
+      lastFrame_(0),
+      deltaTime_(0),
+      uiEnabled_(true) {}
 
 bool Context::Initialize() {
   GLFWwindow *window =
@@ -55,7 +62,21 @@ void Context::Loop(std::function<void(Context &)> loop) {
   deltaTime_ = currentFrame - lastFrame_;
   lastFrame_ = currentFrame;
   camera_.Tick();
+
+  if (uiEnabled_) {
+    ImGui::Begin(
+        title_.c_str(), &uiEnabled_,
+        ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
+    ImGui::Text("Stats");
+    ImGui::Text("%.1f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
+                ImGui::GetIO().Framerate);
+    ImGui::Separator();
+    camera_.OnGUI();
+  }
   loop(*this);
+  if (uiEnabled_) {
+    ImGui::End();
+  }
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   glfwSwapBuffers(window_);

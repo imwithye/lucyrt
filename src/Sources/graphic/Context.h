@@ -33,6 +33,7 @@ class Context : public Component {
   GLfloat lastFrame_;
   GLfloat deltaTime_;
   Camera camera_;
+  bool uiEnabled_;
 
   Context(GLuint width, GLuint height, const std::string &title);
   virtual bool Initialize();
