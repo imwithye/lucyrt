@@ -1,10 +1,16 @@
 // Copyright 2019
 #pragma once
 
-#include "GL.h"
-
 namespace lucyrt {
 namespace graphic {
-class Component {};
+class Component {
+ public:
+  int GetID() const { return id_; }
+  virtual bool Initialize() = 0;
+  virtual void Delete() = 0;
+
+ protected:
+  int id_;
+};
 }  // namespace graphic
 }  // namespace lucyrt
