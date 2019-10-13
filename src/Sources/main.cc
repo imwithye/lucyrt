@@ -13,7 +13,7 @@ using lucyrt::graphic::ProgramRef;
 int main() {
   spdlog::set_level(spdlog::level::trace);
   App::Initialize(800, 600, "lucyrt");
-  ModelRef model = Model::New("model", "../example/cube.obj");
+  ModelRef model = Model::New("model", "../examples/cube.obj");
   model->Initialize();
   ProgramRef unlit =
       Program::New("unlit", Shaders_unlit_vert, Shaders_unlit_frag);

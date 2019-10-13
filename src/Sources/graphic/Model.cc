@@ -70,8 +70,8 @@ ModelRef Model::New(const std::string &name, const std::string &filepath) {
     return ref;
   }
   ProcessNode(ref, aScene->mRootNode, aScene);
-  spdlog::error("Model {}(meshes: {}) loaded from {}", name, ref->meshes.size(),
-                filepath);
+  spdlog::info("Model {}(meshes: {}) loaded from {}", name, ref->meshes.size(),
+               filepath);
   return ref;
 }
 
