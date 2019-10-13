@@ -8,6 +8,7 @@ include_directories(
   vendors/imgui-1.73/
   vendors/imgui-1.73/examples/
   vendors/spdlog-1.4.2/include/spdlog/
+  vendors/stb_image-2.23/
   src/Sources/)
 add_subdirectory(vendors)
 
