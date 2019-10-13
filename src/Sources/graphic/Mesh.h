@@ -22,7 +22,9 @@ struct Vertex {
   }
 };
 
-struct Material {};
+struct Material {
+  glm::vec3 diffuse;
+};
 
 class Mesh;
 typedef std::shared_ptr<Mesh> MeshRef;
@@ -32,6 +34,7 @@ class Mesh final : public Component {
   std::vector<Vertex> vertices;
   std::vector<GLuint> indices;
   TransformationMatrix transform;
+  Material material;
 
   static MeshRef New(const std::string &name);
   bool Initialize();

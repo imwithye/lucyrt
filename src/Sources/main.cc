@@ -5,19 +5,19 @@
 
 using lucyrt::graphic::App;
 using lucyrt::graphic::Context;
-using lucyrt::graphic::Fullscreen;
-using lucyrt::graphic::FullscreenRef;
+using lucyrt::graphic::Model;
+using lucyrt::graphic::ModelRef;
 using lucyrt::graphic::Program;
 using lucyrt::graphic::ProgramRef;
 
 int main() {
   spdlog::set_level(spdlog::level::trace);
   App::Initialize(800, 600, "lucyrt");
-  FullscreenRef fs = Fullscreen::New("postprocessing color");
-  fs->Initialize();
-  ProgramRef color = Program::New(
-      "postprocessing color", Shaders_post_unlit_vert, Shaders_post_unlit_frag);
-  color->Initialize();
-  App::Run([&](Context&) { fs->Draw(color); });
+  ModelRef model = Model::New("model", "../example/cube.obj");
+  model->Initialize();
+  ProgramRef unlit =
+      Program::New("unlit", Shaders_unlit_vert, Shaders_unlit_frag);
+  unlit->Initialize();
+  App::Run([&](Context&) { model->Draw(unlit); });
   return 0;
 }
