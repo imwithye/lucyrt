@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include "Component.h"
 #include "GL.h"
@@ -23,7 +24,7 @@ struct Vertex {
 };
 
 struct Material {
-  glm::vec3 diffuse;
+  glm::vec4 diffuse;
 };
 
 class Mesh;

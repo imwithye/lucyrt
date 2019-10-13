@@ -43,6 +43,39 @@ ProgramRef Program::New(const std::string& name, const std::string& vert,
 
 void Program::Use() { glUseProgram(id_); }
 
+void Program::SetBool(const std::string& name, const GLboolean value) {
+  glUseProgram(id_);
+  glUniform1i(glGetUniformLocation(id_, name.c_str()), static_cast<int>(value));
+}
+
+void Program::SetInt(const std::string& name, const GLint value) {
+  glUseProgram(id_);
+  glUniform1i(glGetUniformLocation(id_, name.c_str()), value);
+}
+
+void Program::SetFloat(const std::string& name, const GLfloat value) {
+  glUseProgram(id_);
+  glUniform1f(glGetUniformLocation(id_, name.c_str()), value);
+}
+
+void Program::SetVec3(const std::string& name, const glm::vec3& value) {
+  glUseProgram(id_);
+  glUniform3f(glGetUniformLocation(id_, name.c_str()), value.x, value.y,
+              value.z);
+}
+
+void Program::SetVec4(const std::string& name, const glm::vec4& value) {
+  glUseProgram(id_);
+  glUniform4f(glGetUniformLocation(id_, name.c_str()), value.x, value.y,
+              value.z, value.w);
+}
+
+void Program::SetMat4(const std::string& name, const glm::mat4& value) {
+  glUseProgram(id_);
+  glUniformMatrix4fv(glGetUniformLocation(id_, name.c_str()), 1, GL_FALSE,
+                     value_ptr(value));
+}
+
 bool Program::Initialize() {
   GLuint program_id = glCreateProgram();
   if (vert_) {

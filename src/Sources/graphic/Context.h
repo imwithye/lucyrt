@@ -22,6 +22,7 @@ class Context : public Component {
   }
   inline GLFWwindow *GetWindow() { return window_; }
   inline GLfloat GetDeltaTime() const { return deltaTime_; }
+  inline Camera &GetCamera() { return camera_; }
   bool ShouldClose() const;
   virtual ~Context();
 

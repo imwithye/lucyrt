@@ -5,6 +5,7 @@
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include "Mesh.h"
 
 using lucyrt::graphic::Mesh;
@@ -41,7 +42,7 @@ static void ProcessMesh(ModelRef m, aiMesh *aMesh, const aiScene *aScene) {
   aiMaterial *aMaterial = aScene->mMaterials[aMesh->mMaterialIndex];
   aiColor3D aColor(0.f, 0.f, 0.f);
   aMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aColor);
-  mesh->material.diffuse = glm::vec3(aColor.r, aColor.g, aColor.b);
+  mesh->material.diffuse = glm::vec4(aColor.r, aColor.g, aColor.b, 1.0f);
 
   m->meshes.push_back(mesh);
 }
@@ -66,12 +67,12 @@ ModelRef Model::New(const std::string &name, const std::string &filepath) {
                                       aiProcess_CalcTangentSpace);
   if (!aScene || aScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
       !aScene->mRootNode) {
-    spdlog::error("Model {} load from {} failed", name, filepath);
+    spdlog::error("Model '{}' load from {} failed", name, filepath);
     return ref;
   }
   ProcessNode(ref, aScene->mRootNode, aScene);
-  spdlog::info("Model {}(meshes: {}) loaded from {}", name, ref->meshes.size(),
-               filepath);
+  spdlog::info("Model '{}(meshes: {})' loaded from {}", name,
+               ref->meshes.size(), filepath);
   return ref;
 }
 

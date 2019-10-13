@@ -60,7 +60,12 @@
     "set": "cpp",
     "mutex": "cpp",
     "thread": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "hash_map": "cpp",
+    "hash_set": "cpp",
+    "forward_list": "cpp",
+    "list": "cpp",
+    "unordered_set": "cpp"
   },
   "glsllint.glslangValidatorPath": "glslangValidator"
 }

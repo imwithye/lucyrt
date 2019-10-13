@@ -40,6 +40,8 @@ void Mesh::Delete() {
 }
 
 void Mesh::Draw(ProgramRef program) {
+  program->SetMat4("LUCYRT_LOCAL_TO_WORLD", transform.GetMatrix());
+  program->SetVec4("Diffuse", material.diffuse);
   program->Use();
   glBindVertexArray(vao_);
   glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
