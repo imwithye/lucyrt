@@ -7,30 +7,37 @@ using lucyrt::graphic::Shader;
 using lucyrt::graphic::ShaderRef;
 using lucyrt::graphic::ShaderTypes;
 
-ProgramRef Program::New(const ShaderRef vert, const ShaderRef frag) {
-  ProgramRef program(new Program(vert, frag, nullptr));
+ProgramRef Program::New(const std::string& name, const ShaderRef vert,
+                        const ShaderRef frag) {
+  ProgramRef program(new Program(name, vert, frag, nullptr));
   return program;
 }
 
-ProgramRef Program::New(const ShaderRef vert, const ShaderRef frag,
-                        const ShaderRef geom) {
-  ProgramRef program(new Program(vert, frag, geom));
+ProgramRef Program::New(const std::string& name, const ShaderRef vert,
+                        const ShaderRef frag, const ShaderRef geom) {
+  ProgramRef program(new Program(name, vert, frag, geom));
   return program;
 }
 
-ProgramRef Program::New(const std::string& vert, const std::string& frag) {
+ProgramRef Program::New(const std::string& name, const std::string& vert,
+                        const std::string& frag) {
   ShaderRef v = Shader::New(vert, ShaderTypes::kVertexShader);
+  v->Initialize();
   ShaderRef f = Shader::New(frag, ShaderTypes::kFragmentShader);
-  ProgramRef program(new Program(v, f, nullptr));
+  f->Initialize();
+  ProgramRef program(new Program(name, v, f, nullptr));
   return program;
 }
 
-ProgramRef Program::New(const std::string& vert, const std::string& frag,
-                        const std::string& geom) {
+ProgramRef Program::New(const std::string& name, const std::string& vert,
+                        const std::string& frag, const std::string& geom) {
   ShaderRef v = Shader::New(vert, ShaderTypes::kVertexShader);
+  v->Initialize();
   ShaderRef f = Shader::New(frag, ShaderTypes::kFragmentShader);
+  f->Initialize();
   ShaderRef g = Shader::New(geom, ShaderTypes::kGeometryShader);
-  ProgramRef program(new Program(v, f, g));
+  g->Initialize();
+  ProgramRef program(new Program(name, v, f, g));
   return program;
 }
 
@@ -49,17 +56,24 @@ bool Program::Initialize() {
   GLint success;
   glGetProgramiv(program_id, GL_LINK_STATUS, &success);
   if (!success) {
+    char infoLog[512];
+    glGetProgramInfoLog(program_id, 512, NULL, infoLog);
+    spdlog::error("Program '{}' linking faild\n{}", name_, infoLog);
     glDeleteProgram(program_id);
     return false;
   }
   id_ = program_id;
+  spdlog::trace("Program '{}({})' initialized", name_, id_);
   return true;
 }
 
-void Program::Delete() { glDeleteProgram(id_); }
+void Program::Delete() {
+  glDeleteProgram(id_);
+  spdlog::trace("Program '{}({})' deleted", name_, id_);
+}
 
 Program::~Program() { Delete(); }
 
-Program::Program(const ShaderRef vert, const ShaderRef frag,
-                 const ShaderRef geom)
-    : vert_(vert), frag_(frag), geom_(geom) {}
+Program::Program(const std::string& name, const ShaderRef vert,
+                 const ShaderRef frag, const ShaderRef geom)
+    : name_(name), vert_(vert), frag_(frag), geom_(geom) {}

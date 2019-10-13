@@ -24,6 +24,7 @@ bool Shader::Initialize() {
       shader_type = GL_GEOMETRY_SHADER;
       break;
     default:
+      spdlog::error("Unrecognized shader type\n{}", shader_type_);
       return false;
   }
   GLuint shader_id = glCreateShader(shader_type);
@@ -33,6 +34,9 @@ bool Shader::Initialize() {
   GLint success;
   glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
   if (!success) {
+    char infoLog[512];
+    glGetShaderInfoLog(shader_id, 512, NULL, infoLog);
+    spdlog::error("Shader compilation faild\n{}", infoLog);
     glDeleteShader(shader_id);
     return false;
   }

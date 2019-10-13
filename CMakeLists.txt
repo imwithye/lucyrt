@@ -7,6 +7,7 @@ include_directories(
   vendors/glm-0.9.9.6/
   vendors/imgui-1.73/
   vendors/imgui-1.73/examples/
+  vendors/spdlog-1.4.2/include/spdlog/
   src/Sources/)
 add_subdirectory(vendors)
 

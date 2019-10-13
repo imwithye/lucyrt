@@ -16,11 +16,13 @@ bool Context::Initialize() {
   GLFWwindow *window =
       glfwCreateWindow(width_, height_, title_.c_str(), NULL, NULL);
   if (!window) {
+    spdlog::error("Context '{}' failed to create window", title_);
     glfwTerminate();
     return false;
   }
   glfwMakeContextCurrent(window);
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    spdlog::error("Context '{}' failed to initialize GLAD", title_);
     return false;
   }
   IMGUI_CHECKVERSION();
@@ -29,6 +31,7 @@ bool Context::Initialize() {
   ImGui_ImplOpenGL3_Init("#version 330 core");
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   window_ = window;
+  spdlog::trace("Context '{}({} x {})' initialized", title_, width_, height_);
   return true;
 }
 
@@ -38,6 +41,7 @@ void Context::Delete() {
   ImGui::DestroyContext();
   glfwDestroyWindow(window_);
   glfwTerminate();
+  spdlog::trace("Context '{}({} x {})' deleted", title_, width_, height_);
 }
 
 void Context::Loop(std::function<void(Context &)> loop) {

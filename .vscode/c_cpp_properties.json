@@ -8,6 +8,7 @@
         "${workspaceFolder}/vendors/glfw-3.3/include/",
         "${workspaceFolder}/vendors/glm-0.9.9.6/",
         "${workspaceFolder}/vendors/imgui-1.73/",
+        "${workspaceFolder}/vendors/spdlog-1.4.2/include/spdlog/",
         "${workspaceFolder}/src/Sources/"
       ],
       "defines": [],
