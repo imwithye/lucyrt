@@ -1,5 +1,6 @@
 // Copyright 2019
 #include "Context.h"
+#include "Camera.h"
 
 using lucyrt::graphic::Context;
 
@@ -53,6 +54,7 @@ void Context::Loop(std::function<void(Context &)> loop) {
   GLdouble currentFrame = glfwGetTime();
   deltaTime_ = currentFrame - lastFrame_;
   lastFrame_ = currentFrame;
+  camera_.Tick();
   loop(*this);
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

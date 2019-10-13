@@ -4,6 +4,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include "Camera.h"
 #include "Component.h"
 #include "GL.h"
 
@@ -19,6 +20,7 @@ class Context : public Component {
   inline GLfloat GetAspect() const {
     return static_cast<GLfloat>(GetWidth()) / static_cast<GLfloat>(GetHeight());
   }
+  inline GLFWwindow *GetWindow() { return window_; }
   inline GLfloat GetDeltaTime() const { return deltaTime_; }
   bool ShouldClose() const;
   virtual ~Context();
@@ -30,6 +32,7 @@ class Context : public Component {
   GLFWwindow *window_;
   GLfloat lastFrame_;
   GLfloat deltaTime_;
+  Camera camera_;
 
   Context(GLuint width, GLuint height, const std::string &title);
   virtual bool Initialize();

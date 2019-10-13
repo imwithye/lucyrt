@@ -2,6 +2,7 @@
 #include "App.h"
 
 #include "GL.h"
+#include "Input.h"
 
 using lucyrt::graphic::App;
 using lucyrt::graphic::Context;
@@ -26,7 +27,7 @@ bool App::Initialize(GLuint width, GLuint height, const std::string &title) {
     return false;
   }
   glfwSetFramebufferSizeCallback(ctx->window_, framebufferSizeCallback);
-  // glfwSetCursorPosCallback(window, Input::glfwMouseCallback);
+  glfwSetCursorPosCallback(ctx->window_, Input::glfwMouseCallback);
   glfwSetInputMode(ctx->window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
   app.ctx_ = ctx;
   spdlog::info("App initialized");
