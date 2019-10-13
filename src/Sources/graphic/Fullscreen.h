@@ -2,31 +2,35 @@
 #pragma once
 
 #include <memory>
+#include <string>
+
+#include <glm/vec3.hpp>
+
 #include "Component.h"
 #include "GL.h"
 #include "Program.h"
-#include "resource/rs.h"
 
 namespace lucyrt {
 namespace graphic {
 class Fullscreen;
 typedef std::shared_ptr<Fullscreen> FullscreenRef;
 
-class Fullscreen final : public Component {
+class Fullscreen : public Component {
  public:
-  static FullscreenRef New();
+  static FullscreenRef New(const std::string &name);
 
   void Draw();
 
   bool Initialize();
   void Delete();
+  void Draw(ProgramRef program);
   ~Fullscreen();
 
  private:
-  GLuint vao;
-  ProgramRef fullscreen;
+  std::string name_;
+  GLuint vao_, vbo_;
 
-  Fullscreen();
+  explicit Fullscreen(const std::string &name);
 };
 }  // namespace graphic
 }  // namespace lucyrt
