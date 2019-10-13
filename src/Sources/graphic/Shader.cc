@@ -24,7 +24,7 @@ bool Shader::Initialize() {
       shader_type = GL_GEOMETRY_SHADER;
       break;
     default:
-      break;
+      return false;
   }
   GLuint shader_id = glCreateShader(shader_type);
   const char* code = code_.c_str();
