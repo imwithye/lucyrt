@@ -4,10 +4,14 @@
 #include "GL.h"
 
 using lucyrt::graphic::Shader;
+using lucyrt::graphic::ShaderRef;
 using lucyrt::graphic::ShaderTypes;
+using std::string;
 
-Shader::Shader(const std::string& code, ShaderTypes shader_type)
-    : code_(code), shader_type_(shader_type) {}
+ShaderRef Shader::New(const string& code, ShaderTypes shader_type) {
+  ShaderRef shader(new Shader(code, shader_type));
+  return shader;
+}
 
 ShaderTypes Shader::GetShaderType() const { return shader_type_; }
 
@@ -43,3 +47,6 @@ bool Shader::Initialize() {
 void Shader::Delete() { glDeleteShader(id_); }
 
 Shader::~Shader() { Delete(); }
+
+Shader::Shader(const string& code, ShaderTypes shader_type)
+    : code_(code), shader_type_(shader_type) {}
