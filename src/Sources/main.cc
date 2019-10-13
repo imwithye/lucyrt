@@ -2,7 +2,10 @@
 #include <iostream>
 #include "graphic/graphic.h"
 
+using lucyrt::graphic::App;
+
 int main() {
-  std::cout << "Hello World!" << std::endl;
+  App::Init(800, 600, "lucyrt");
+  App::Run([](App& app) {});
   return 0;
 }

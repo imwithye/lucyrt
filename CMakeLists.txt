@@ -6,6 +6,7 @@ include_directories(
   vendors/glfw-3.3/include/
   vendors/glm-0.9.9.6/
   vendors/imgui-1.73/
+  vendors/imgui-1.73/examples/
   src/Sources/)
 add_subdirectory(vendors)
 

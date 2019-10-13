@@ -11,13 +11,13 @@ using lucyrt::graphic::ShaderTypes;
 bool Program::Initialize() {
   GLuint program_id = glCreateProgram();
   if (vert_) {
-    glAttachShader(program_id, vert_->GetID());
+    glAttachShader(program_id, vert_->GetId());
   }
   if (frag_) {
-    glAttachShader(program_id, frag_->GetID());
+    glAttachShader(program_id, frag_->GetId());
   }
   if (geom_) {
-    glAttachShader(program_id, geom_->GetID());
+    glAttachShader(program_id, geom_->GetId());
   }
   glLinkProgram(program_id);
   GLint success;

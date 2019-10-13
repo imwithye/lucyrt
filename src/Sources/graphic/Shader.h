@@ -14,13 +14,15 @@ typedef std::shared_ptr<Shader> ShaderRef;
 
 class Shader : public Component {
  public:
-  ShaderRef New(const std::string &code, ShaderTypes shader_type);
-  ShaderTypes GetShaderType() const;
+  static ShaderRef New(const std::string &code, ShaderTypes shader_type);
+  inline int GetId() const { return id_; }
+  inline ShaderTypes GetShaderType() const { return shader_type_; }
   virtual bool Initialize();
   virtual void Delete();
   virtual ~Shader();
 
  private:
+  int id_;
   std::string code_;
   ShaderTypes shader_type_;
 

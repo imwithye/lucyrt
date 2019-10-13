@@ -18,11 +18,13 @@ class Program : public Component {
   ProgramRef New(const ShaderRef vert, const ShaderRef frag);
   ProgramRef New(const ShaderRef vert, const ShaderRef frag,
                  const ShaderRef geom);
+  inline int GetId() const { return id_; }
   virtual bool Initialize();
   virtual void Delete();
   virtual ~Program();
 
  private:
+  int id_;
   ShaderRef vert_;
   ShaderRef frag_;
   ShaderRef geom_;

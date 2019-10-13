@@ -13,8 +13,6 @@ ShaderRef Shader::New(const string& code, ShaderTypes shader_type) {
   return shader;
 }
 
-ShaderTypes Shader::GetShaderType() const { return shader_type_; }
-
 bool Shader::Initialize() {
   GLenum shader_type;
   switch (shader_type_) {
