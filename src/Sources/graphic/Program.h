@@ -16,9 +16,12 @@ typedef std::shared_ptr<Program> ProgramRef;
 
 class Program : public Component {
  public:
-  ProgramRef New(const ShaderRef vert, const ShaderRef frag);
-  ProgramRef New(const ShaderRef vert, const ShaderRef frag,
-                 const ShaderRef geom);
+  static ProgramRef New(const ShaderRef vert, const ShaderRef frag);
+  static ProgramRef New(const ShaderRef vert, const ShaderRef frag,
+                        const ShaderRef geom);
+  static ProgramRef New(const std::string& vert, const std::string& frag);
+  static ProgramRef New(const std::string& vert, const std::string& frag,
+                        const std::string& geom);
   inline GLuint GetId() const { return id_; }
   virtual bool Initialize();
   virtual void Delete();
@@ -30,7 +33,6 @@ class Program : public Component {
   ShaderRef frag_;
   ShaderRef geom_;
 
-  Program(const ShaderRef vert, const ShaderRef frag);
   Program(const ShaderRef vert, const ShaderRef frag, const ShaderRef geom);
 };
 }  // namespace graphic
