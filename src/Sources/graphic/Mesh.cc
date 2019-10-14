@@ -33,7 +33,6 @@ bool Mesh::Initialize() {
                         reinterpret_cast<void *>(offsetof(Vertex, uv)));
   glEnableVertexAttribArray(2);
 
-  shader->Initialize();
   if (shader->diffuse_texture) shader->diffuse_texture->Initialize();
 
   spdlog::trace("Mesh '{}(v:{}, i:{}, {})' initialized", name, vertices.size(),
@@ -67,6 +66,6 @@ void Mesh::Draw() {
 Mesh::~Mesh() { Delete(); }
 
 Mesh::Mesh(const std::string &name) : name(name) {
-  shader =
-      Shader::New("shader", Shaders_blinn_phong_vert, Shaders_blinn_phong_frag);
+  shader = std::make_shared<Shader>("shader", Shaders_blinn_phong_vert,
+                                    Shaders_blinn_phong_frag);
 }

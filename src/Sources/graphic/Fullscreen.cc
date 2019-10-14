@@ -10,7 +10,7 @@ FullscreenRef Fullscreen::New(const std::string &name) {
   return ref;
 }
 
-void Fullscreen::Draw(ShaderRef program) {
+void Fullscreen::Draw(Shader *program) {
   program->Use();
   glBindVertexArray(vao_);
   glDrawArrays(GL_TRIANGLES, 0, 6);

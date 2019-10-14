@@ -11,23 +11,19 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "Component.h"
 #include "GL.h"
 #include "Texture.h"
 
 namespace lucyrt {
 namespace graphic {
-class Shader;
-typedef std::shared_ptr<Shader> ShaderRef;
-
-class Shader : public Component {
+class Shader {
  public:
-  static ShaderRef New(const std::string& name, const std::string& vert,
-                       const std::string& frag);
-  static ShaderRef New(const std::string& name, const std::string& vert,
-                       const std::string& frag, const std::string& geom);
+  std::string name;
 
-  inline std::string GetName() const { return name_; }
+  Shader(const std::string& name, const std::string& vert,
+         const std::string& frag, const std::string& geom = "");
+  ~Shader();
+
   inline GLuint GetId() const { return id_; }
 
   glm::vec4 diffuse;
@@ -43,19 +39,11 @@ class Shader : public Component {
   void SetTexture(const std::string& name, const GLenum channel,
                   const TextureRef value);
 
-  virtual bool Initialize();
-  virtual void Delete();
-  virtual ~Shader();
-
  private:
-  std::string name_;
   GLuint id_;
   std::string vert_;
   std::string frag_;
   std::string geom_;
-
-  Shader(const std::string& name, const std::string& vert,
-         const std::string& frag, const std::string& geom);
 };
 }  // namespace graphic
 }  // namespace lucyrt

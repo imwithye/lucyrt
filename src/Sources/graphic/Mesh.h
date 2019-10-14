@@ -35,7 +35,7 @@ class Mesh final : public Component {
   std::vector<Vertex> vertices;
   std::vector<GLuint> indices;
   TransformationMatrix transform;
-  ShaderRef shader;
+  std::shared_ptr<Shader> shader;
 
   static MeshRef New(const std::string &name);
   bool Initialize();

@@ -23,7 +23,7 @@ class Fullscreen : public Component {
 
   bool Initialize();
   void Delete();
-  void Draw(ShaderRef program);
+  void Draw(Shader *program);
   ~Fullscreen();
 
  private:
