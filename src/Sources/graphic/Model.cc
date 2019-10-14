@@ -7,13 +7,29 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include "Mesh.h"
+#include "Texture.h"
 
 using lucyrt::graphic::Mesh;
 using lucyrt::graphic::MeshRef;
 using lucyrt::graphic::Model;
 using lucyrt::graphic::ModelRef;
 using lucyrt::graphic::ProgramRef;
+using lucyrt::graphic::Texture;
+using lucyrt::graphic::TextureRef;
 using lucyrt::graphic::Vertex;
+
+static std::vector<TextureRef> loadMaterialTextures(
+    aiMaterial *mat, aiTextureType type, const std::string &typeName) {
+  std::vector<TextureRef> textures;
+  for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
+    aiString str;
+    mat->GetTexture(type, i, &str);
+    std::string filepath(str.C_Str());
+    TextureRef tex = Texture::New("../examples/" + filepath);
+    textures.push_back(tex);
+  }
+  return textures;
+}
 
 static void ProcessMesh(ModelRef m, aiMesh *aMesh, const aiScene *aScene) {
   MeshRef mesh = Mesh::New(aMesh->mName.C_Str());
@@ -45,7 +61,14 @@ static void ProcessMesh(ModelRef m, aiMesh *aMesh, const aiScene *aScene) {
   aiColor3D aColor(0.f, 0.f, 0.f);
   aMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aColor);
   mesh->material.diffuse = glm::vec4(aColor.r, aColor.g, aColor.b, 1.0f);
-
+  std::vector<TextureRef> diffuse_maps =
+      loadMaterialTextures(aMaterial, aiTextureType_DIFFUSE, "texture_diffuse");
+  mesh->material.textures.insert(mesh->material.textures.end(),
+                                 diffuse_maps.begin(), diffuse_maps.end());
+  std::vector<TextureRef> specular_maps = loadMaterialTextures(
+      aMaterial, aiTextureType_SPECULAR, "texture_specular");
+  mesh->material.textures.insert(mesh->material.textures.end(),
+                                 specular_maps.begin(), specular_maps.end());
   m->meshes.push_back(mesh);
 }
 

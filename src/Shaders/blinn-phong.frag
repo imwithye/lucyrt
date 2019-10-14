@@ -8,10 +8,12 @@ uniform vec3 LUCYRT_LIGHT_COLOR = vec3(0.8, 0.8, 0.8);
 
 uniform float LUCYRT_GAMMA = 2.0;
 
-uniform vec4 Diffuse = vec4(0, 0, 0, 1);
+uniform vec4 Diffuse = vec4(1, 1, 1, 1);
+uniform sampler2D DiffuseTexture0;
 
 in vec3 Pos;
 in vec3 Normal;
+in vec2 UV;
 out vec4 FragColor;
 
 void main() {
@@ -26,6 +28,7 @@ void main() {
   float spec = pow(max(dot(normal, halfwayDir), 0.0), 32);
   vec3 specular = 0.5 * spec * LUCYRT_LIGHT_COLOR;
 
-  FragColor = vec4((diffuse + ambient + specular), 1) * Diffuse;
+  FragColor = vec4((diffuse + ambient + specular), 1) *
+              mix(texture2D(DiffuseTexture0, UV), Diffuse, 0.2);
   FragColor.rgb = pow(FragColor.rgb, vec3(1.0 / LUCYRT_GAMMA));
 }

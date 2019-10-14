@@ -29,7 +29,11 @@ bool Mesh::Initialize() {
   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                         reinterpret_cast<void *>(offsetof(Vertex, uv)));
   glEnableVertexAttribArray(2);
-  spdlog::trace("Mesh '{}(v:{}, i:{}, {})' initialized", name_, vertices.size(),
+
+  for (TextureRef ref : material.textures) {
+    ref->Initialize();
+  }
+  spdlog::trace("Mesh '{}(v:{}, i:{}, {})' initialized", name, vertices.size(),
                 indices.size(), vao_);
   return true;
 }
@@ -38,13 +42,16 @@ void Mesh::Delete() {
   glDeleteBuffers(1, &ebo_);
   glDeleteBuffers(1, &vbo_);
   glDeleteVertexArrays(1, &vao_);
-  spdlog::trace("Mesh '{}(v:{}, i:{})' deleted", name_, vertices.size(),
+  spdlog::trace("Mesh '{}(v:{}, i:{})' deleted", name, vertices.size(),
                 indices.size());
 }
 
 void Mesh::Draw(ProgramRef program) {
   program->SetMat4("LUCYRT_LOCAL_TO_WORLD", transform.GetMatrix());
   program->SetVec4("Diffuse", material.diffuse);
+  for (TextureRef ref : material.textures) {
+    program->SetTexture("DiffuseTexture0", GL_TEXTURE0, ref);
+  }
   program->Use();
   glBindVertexArray(vao_);
   glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
@@ -52,4 +59,4 @@ void Mesh::Draw(ProgramRef program) {
 
 Mesh::~Mesh() { Delete(); }
 
-Mesh::Mesh(const std::string &name) : name_(name) {}
+Mesh::Mesh(const std::string &name) : name(name) {}

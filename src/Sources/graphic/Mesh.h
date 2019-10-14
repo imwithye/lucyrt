@@ -12,6 +12,7 @@
 #include "Component.h"
 #include "GL.h"
 #include "Program.h"
+#include "Texture.h"
 #include "TransformationMatrix.h"
 
 namespace lucyrt {
@@ -27,6 +28,7 @@ struct Vertex {
 
 struct Material {
   glm::vec4 diffuse;
+  std::vector<TextureRef> textures;
 };
 
 class Mesh;
@@ -34,6 +36,7 @@ typedef std::shared_ptr<Mesh> MeshRef;
 
 class Mesh final : public Component {
  public:
+  std::string name;
   std::vector<Vertex> vertices;
   std::vector<GLuint> indices;
   TransformationMatrix transform;
@@ -46,7 +49,6 @@ class Mesh final : public Component {
   ~Mesh();
 
  private:
-  std::string name_;
   GLuint vao_, vbo_, ebo_;
 
   explicit Mesh(const std::string &name);

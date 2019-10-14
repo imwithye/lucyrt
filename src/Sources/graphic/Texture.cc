@@ -32,7 +32,7 @@ bool Texture::Initialize() {
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_, height_, 0, GL_RGBA,
                GL_UNSIGNED_BYTE, reinterpret_cast<void*>(data_.data()));
   glGenerateMipmap(GL_TEXTURE_2D);
-  spdlog::info("Texture '(w: {}, h: {})' initialized", width_, height_);
+  spdlog::trace("Texture '(w: {}, h: {})' initialized", width_, height_);
   return true;
 }
 
