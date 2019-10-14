@@ -5,12 +5,6 @@
 #include "resource/rs.h"
 
 using lucyrt::graphic::Mesh;
-using lucyrt::graphic::MeshRef;
-
-MeshRef Mesh::New(const std::string &name) {
-  MeshRef mesh(new Mesh(name));
-  return mesh;
-}
 
 Mesh::Mesh(const std::string &name) : name(name), vao_(0), vbo_(0), ebo_(0) {
   shader = std::make_shared<Shader>("shader", Shaders_blinn_phong_vert,

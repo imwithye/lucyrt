@@ -1,31 +1,33 @@
 // Copyright 2019
 #pragma once
 
+#include <spdlog/fmt/ostr.h>
+
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "Component.h"
 #include "Mesh.h"
 
 namespace lucyrt {
 namespace graphic {
-class Model;
-typedef std::shared_ptr<Model> ModelRef;
-
-class Model : public Component {
+class Model {
  public:
-  std::vector<MeshRef> meshes;
+  std::vector<std::shared_ptr<Mesh>> meshes;
 
-  static ModelRef New(const std::string &name, const std::string &filepath);
-  bool Initialize();
-  void Delete();
-  void Draw();
+  explicit Model(const std::string& name, const std::string& filepath);
   ~Model();
+  template <typename OStream>
+  friend OStream& operator<<(OStream& os, const Model* m) {
+    return os << "Model[" << m->name << "(meshes:" << m->meshes.size() << ")]";
+  }
+
+  bool PrepareToGPU();
+  void RemoveFromGPU();
+  void Draw();
 
  private:
-  std::string name_;
-  explicit Model(const std::string &name);
+  std::string name;
 };
 }  // namespace graphic
 }  // namespace lucyrt

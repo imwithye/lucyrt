@@ -10,9 +10,7 @@
 #include "Texture.h"
 
 using lucyrt::graphic::Mesh;
-using lucyrt::graphic::MeshRef;
 using lucyrt::graphic::Model;
-using lucyrt::graphic::ModelRef;
 using lucyrt::graphic::Texture;
 using lucyrt::graphic::Vertex;
 
@@ -30,8 +28,9 @@ static std::vector<std::shared_ptr<Texture>> loadMaterialTextures(
   return textures;
 }
 
-static void ProcessMesh(ModelRef m, aiMesh *aMesh, const aiScene *aScene) {
-  MeshRef mesh = Mesh::New(aMesh->mName.C_Str());
+static void ProcessMesh(Model *m, aiMesh *aMesh, const aiScene *aScene) {
+  const std::shared_ptr<Mesh> mesh =
+      std::make_shared<Mesh>(aMesh->mName.C_Str());
 
   for (unsigned int i = 0; i < aMesh->mNumVertices; i++) {
     Vertex vertex;
@@ -68,7 +67,7 @@ static void ProcessMesh(ModelRef m, aiMesh *aMesh, const aiScene *aScene) {
   m->meshes.push_back(mesh);
 }
 
-static void ProcessNode(ModelRef m, aiNode *aNode, const aiScene *aScene) {
+static void ProcessNode(Model *m, aiNode *aNode, const aiScene *aScene) {
   for (unsigned int i = 0; i < aNode->mNumMeshes; i++) {
     aiMesh *mesh = aScene->mMeshes[aNode->mMeshes[i]];
     ProcessMesh(m, mesh, aScene);
@@ -78,46 +77,41 @@ static void ProcessNode(ModelRef m, aiNode *aNode, const aiScene *aScene) {
   }
 }
 
-ModelRef Model::New(const std::string &name, const std::string &filepath) {
-  (void)filepath;
-  ModelRef ref(new Model(name));
+Model::~Model() {}
 
+Model::Model(const std::string &name, const std::string &filepath)
+    : name(name) {
   Assimp::Importer importer;
   const aiScene *aScene =
       importer.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs |
                                       aiProcess_CalcTangentSpace);
   if (!aScene || aScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
       !aScene->mRootNode) {
-    spdlog::error("Model '{}' load from {} failed", name, filepath);
-    return ref;
+    spdlog::error("{} load from {} failed", this, filepath);
+    return;
   }
-  ProcessNode(ref, aScene->mRootNode, aScene);
-  spdlog::info("Model '{}(meshes: {})' loaded from {}", name,
-               ref->meshes.size(), filepath);
-  return ref;
+  ProcessNode(this, aScene->mRootNode, aScene);
+  spdlog::info("{} loaded from {}", this, filepath);
+  return;
 }
 
-bool Model::Initialize() {
-  for (MeshRef mesh : meshes) {
+bool Model::PrepareToGPU() {
+  for (const std::shared_ptr<Mesh> mesh : meshes) {
     mesh->PrepareToGPU();
   }
-  spdlog::trace("Model '{}(meshes: {})' initialized", name_, meshes.size());
+  spdlog::trace("{} loaded to GPU", this);
   return true;
 }
 
-void Model::Delete() {
-  for (MeshRef mesh : meshes) {
+void Model::RemoveFromGPU() {
+  for (const std::shared_ptr<Mesh> mesh : meshes) {
     mesh->RemoveFromGPU();
   }
-  spdlog::trace("Model '{}(meshes: {})' deleted", name_, meshes.size());
+  spdlog::trace("{} removed from GPU", this);
 }
 
 void Model::Draw() {
-  for (MeshRef mesh : meshes) {
+  for (const std::shared_ptr<Mesh> mesh : meshes) {
     mesh->Draw();
   }
 }
-
-Model::~Model() {}
-
-Model::Model(const std::string &name) : name_(name) {}

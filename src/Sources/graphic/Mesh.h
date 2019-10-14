@@ -27,9 +27,6 @@ struct Vertex {
   }
 };
 
-class Mesh;
-typedef std::shared_ptr<Mesh> MeshRef;
-
 class Mesh {
  public:
   std::string name;
@@ -46,7 +43,6 @@ class Mesh {
               << " i:" << m->indices.size() << " vao:" << m->vao_ << ")]";
   }
 
-  static MeshRef New(const std::string& name);
   bool PrepareToGPU();
   void RemoveFromGPU();
   void Draw();

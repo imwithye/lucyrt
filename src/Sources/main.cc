@@ -27,16 +27,15 @@ void model(int argc, const char** argv) {
     return;
   }
   App::Initialize(800, 600, "lucyrt");
-  ModelRef model = Model::New("model", argv[1]);
-  model->Initialize();
+  Model model("model", argv[1]);
+  model.PrepareToGPU();
   App::Run([&](Context& ctx) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
-    Camera c = ctx.GetCamera();
-    model->Draw();
+    model.Draw();
   });
 }
 
