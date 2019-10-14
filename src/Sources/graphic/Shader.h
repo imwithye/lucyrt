@@ -1,7 +1,8 @@
 // Copyright 2019
 #pragma once
 
-#include <cstdarg>
+#include <spdlog/fmt/ostr.h>
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -23,6 +24,10 @@ class Shader {
   Shader(const std::string& name, const std::string& vert,
          const std::string& frag, const std::string& geom = "");
   ~Shader();
+  template <typename OStream>
+  friend OStream& operator<<(OStream& os, const Shader* s) {
+    return os << "Shader[" << s->name << "(" << s->id_ << ")]";
+  }
 
   inline GLuint GetId() const { return id_; }
 

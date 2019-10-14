@@ -20,7 +20,28 @@ void Texture::Active(GLenum unit) {
   glBindTexture(GL_TEXTURE_2D, id_);
 }
 
-bool Texture::Initialize() {
+Texture::~Texture() { glDeleteTextures(1, &id_); }
+
+Texture::Texture(const std::string& filepath) : id_(0), width_(0), height_(0) {
+  stbi_set_flip_vertically_on_load(true);
+  int width = 0, height = 0, channels = 0;
+  unsigned char* data =
+      stbi_load(filepath.c_str(), &width, &height, &channels, 4);
+  if (!data) {
+    spdlog::error("{} failed to load from {}", this, filepath);
+    width_ = height_ = 2;
+    data_.resize(width_ * height_ * 4);
+    data_[0] = 0, data_[1] = 0, data_[2] = 0, data_[3] = C(255);
+    data_[4] = C(255), data_[5] = 0, data_[6] = C(128), data_[7] = C(255);
+    data_[8] = C(255), data_[9] = 0, data_[10] = C(128), data_[11] = C(255);
+    data_[12] = 0, data_[13] = 0, data_[14] = 0, data_[15] = C(255);
+  } else {
+    width_ = width;
+    height_ = height;
+    data_.resize(width_ * height_ * 4);
+    std::copy(data, data + data_.size(), data_.begin());
+    stbi_image_free(data);
+  }
   glGenTextures(1, &id_);
   glBindTexture(GL_TEXTURE_2D, id_);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -32,32 +53,5 @@ bool Texture::Initialize() {
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_, height_, 0, GL_RGBA,
                GL_UNSIGNED_BYTE, reinterpret_cast<void*>(data_.data()));
   glGenerateMipmap(GL_TEXTURE_2D);
-  spdlog::trace("Texture '(w: {}, h: {})' initialized", width_, height_);
-  return true;
-}
-
-void Texture::Delete() { glDeleteTextures(1, &id_); }
-
-Texture::~Texture() { Delete(); }
-
-Texture::Texture(const std::string& filepath) : id_(0), width_(0), height_(0) {
-  stbi_set_flip_vertically_on_load(true);
-  int width = 0, height = 0, channels = 0;
-  unsigned char* data =
-      stbi_load(filepath.c_str(), &width, &height, &channels, 4);
-  if (!data) {
-    spdlog::error("Texture failed to load from {}", filepath);
-    width_ = height_ = 2;
-    data_.resize(width_ * height_ * 4);
-    data_[0] = 0, data_[1] = 0, data_[2] = 0, data_[3] = C(255);
-    data_[4] = C(255), data_[5] = 0, data_[6] = C(128), data_[7] = C(255);
-    data_[8] = C(255), data_[9] = 0, data_[10] = C(128), data_[11] = C(255);
-    data_[12] = 0, data_[13] = 0, data_[14] = 0, data_[15] = C(255);
-    return;
-  }
-  width_ = width;
-  height_ = height;
-  data_.resize(width_ * height_ * 4);
-  std::copy(data, data + data_.size(), data_.begin());
-  stbi_image_free(data);
+  spdlog::trace("{} initialized", this);
 }

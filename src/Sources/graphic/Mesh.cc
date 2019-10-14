@@ -33,8 +33,6 @@ bool Mesh::Initialize() {
                         reinterpret_cast<void *>(offsetof(Vertex, uv)));
   glEnableVertexAttribArray(2);
 
-  if (shader->diffuse_texture) shader->diffuse_texture->Initialize();
-
   spdlog::trace("Mesh '{}(v:{}, i:{}, {})' initialized", name, vertices.size(),
                 indices.size(), vao_);
   return true;

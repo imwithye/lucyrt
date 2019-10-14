@@ -15,7 +15,6 @@ void fullscreen(int argc, const char** argv) {
   FullscreenRef fs = Fullscreen::New("texture");
   fs->Initialize();
   TextureRef tex = Texture::New("/home/yiwei/lucyrt/examples/tiles.png");
-  tex->Initialize();
   App::Run([&](Context&) {
     pp_unlit->SetTexture("tex", GL_TEXTURE0, tex);
     fs->Draw(pp_unlit.get());
