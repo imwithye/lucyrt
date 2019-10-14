@@ -110,8 +110,8 @@ void Model::RemoveFromGPU() {
   spdlog::trace("{} removed from GPU", this);
 }
 
-void Model::Draw() {
+void Model::Draw(Context *ctx) {
   for (const std::shared_ptr<Mesh> mesh : meshes) {
-    mesh->Draw();
+    mesh->Draw(ctx);
   }
 }

@@ -18,7 +18,7 @@ class App {
 
   static ContextRef GetContext();
   static bool Initialize(GLuint width, GLuint height, const std::string &title);
-  static void Run(std::function<void(Context &)> loop);
+  static void Run(std::function<void(Context *)> loop);
 
  private:
   ContextRef ctx_;

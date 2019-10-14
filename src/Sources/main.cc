@@ -14,10 +14,9 @@ void fullscreen(int argc, const char** argv) {
       Shaders_postprocessing_unlit_frag);
   FullscreenRef fs = Fullscreen::New("texture");
   fs->Initialize();
-  std::shared_ptr<Texture> tex =
-      std::make_shared<Texture>("/home/yiwei/lucyrt/examples/tiles.png");
-  App::Run([&](Context&) {
-    pp_unlit->SetTexture("tex", GL_TEXTURE0, tex);
+  Texture tex("/home/yiwei/lucyrt/examples/tiles.png");
+  App::Run([&](Context*) {
+    pp_unlit->SetTexture("tex", GL_TEXTURE0, &tex);
     fs->Draw(pp_unlit.get());
   });
 }
@@ -29,13 +28,13 @@ void model(int argc, const char** argv) {
   App::Initialize(800, 600, "lucyrt");
   Model model("model", argv[1]);
   model.PrepareToGPU();
-  App::Run([&](Context& ctx) {
+  App::Run([&](Context* ctx) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
-    model.Draw();
+    model.Draw(ctx);
   });
 }
 

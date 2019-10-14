@@ -34,7 +34,7 @@ bool App::Initialize(GLuint width, GLuint height, const std::string &title) {
   return true;
 }
 
-void App::Run(std::function<void(Context &)> loop) {
+void App::Run(std::function<void(Context *)> loop) {
   spdlog::info("App starts main loop");
   while (!GetContext()->ShouldClose()) {
     GetContext()->Loop(loop);

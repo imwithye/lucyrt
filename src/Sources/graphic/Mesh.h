@@ -11,6 +11,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
+#include "Context.h"
 #include "GL.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -45,7 +46,7 @@ class Mesh {
 
   bool PrepareToGPU();
   void RemoveFromGPU();
-  void Draw();
+  void Draw(Context* ctx);
 
  private:
   GLuint vao_, vbo_, ebo_;

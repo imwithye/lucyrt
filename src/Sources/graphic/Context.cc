@@ -7,6 +7,11 @@ using lucyrt::graphic::Context;
 
 Context::~Context() { Delete(); }
 
+void Context::PrepareShader(Shader *shader) {
+  shader->SetMat4("LUCYRT_WORLD_TO_CAMERA", camera_.GetWorldToCamera());
+  shader->SetVec3("LUCYRT_CAMERA_POS", camera_.transform.GetPos());
+}
+
 bool Context::ShouldClose() const {
   return glfwWindowShouldClose(reinterpret_cast<GLFWwindow *>(window_));
 }
@@ -52,7 +57,7 @@ void Context::Delete() {
   spdlog::trace("Context '{}({} x {})' deleted", title_, width_, height_);
 }
 
-void Context::Loop(std::function<void(Context &)> loop) {
+void Context::Loop(std::function<void(Context *)> loop) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   glfwPollEvents();
   ImGui_ImplOpenGL3_NewFrame();
@@ -73,7 +78,7 @@ void Context::Loop(std::function<void(Context &)> loop) {
     ImGui::Separator();
     camera_.OnGUI();
   }
-  loop(*this);
+  loop(this);
   if (uiEnabled_) {
     ImGui::End();
   }

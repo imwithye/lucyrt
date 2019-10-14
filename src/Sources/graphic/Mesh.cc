@@ -48,15 +48,13 @@ void Mesh::RemoveFromGPU() {
   spdlog::trace("{} removed from GPU", this);
 }
 
-void Mesh::Draw() {
-  shader->SetMat4("LUCYRT_WORLD_TO_CAMERA",
-                  App::GetContext()->GetCamera().GetWorldToCamera());
-  shader->SetVec3("LUCYRT_CAMERA_POS",
-                  App::GetContext()->GetCamera().transform.GetPos());
+void Mesh::Draw(Context *ctx) {
+  ctx->PrepareShader(shader.get());
   shader->SetMat4("LUCYRT_LOCAL_TO_WORLD", transform.GetMatrix());
   shader->SetVec4("Diffuse", shader->diffuse);
   if (shader->diffuse_texture)
-    shader->SetTexture("DiffuseTexture0", GL_TEXTURE0, shader->diffuse_texture);
+    shader->SetTexture("DiffuseTexture0", GL_TEXTURE0,
+                       shader->diffuse_texture.get());
   shader->Use();
   glBindVertexArray(vao_);
   glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);

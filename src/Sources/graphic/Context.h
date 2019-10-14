@@ -4,9 +4,11 @@
 #include <functional>
 #include <memory>
 #include <string>
+
 #include "Camera.h"
 #include "Component.h"
 #include "GL.h"
+#include "Shader.h"
 
 namespace lucyrt {
 namespace graphic {
@@ -23,6 +25,7 @@ class Context : public Component {
   inline GLFWwindow *GetWindow() { return window_; }
   inline GLfloat GetDeltaTime() const { return deltaTime_; }
   inline Camera &GetCamera() { return camera_; }
+  void PrepareShader(Shader *shader);
   bool ShouldClose() const;
   virtual ~Context();
 
@@ -39,7 +42,7 @@ class Context : public Component {
   Context(GLuint width, GLuint height, const std::string &title);
   virtual bool Initialize();
   virtual void Delete();
-  void Loop(std::function<void(Context &)> loop);
+  void Loop(std::function<void(Context *)> loop);
 
   friend class App;
 };

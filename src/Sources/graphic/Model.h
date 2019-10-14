@@ -24,7 +24,7 @@ class Model {
 
   bool PrepareToGPU();
   void RemoveFromGPU();
-  void Draw();
+  void Draw(Context* ctx);
 
  private:
   std::string name;
