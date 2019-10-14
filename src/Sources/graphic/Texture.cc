@@ -8,6 +8,8 @@
 using lucyrt::graphic::Texture;
 using lucyrt::graphic::TextureRef;
 
+#define C(x) static_cast<GLbyte>(x)
+
 TextureRef Texture::New(const std::string& filepath) {
   TextureRef ref(new Texture(filepath));
   return ref;
@@ -23,8 +25,10 @@ bool Texture::Initialize() {
   glBindTexture(GL_TEXTURE_2D, id_);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                  GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                  GL_LINEAR_MIPMAP_LINEAR);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width_, height_, 0, GL_RGBA,
                GL_UNSIGNED_BYTE, reinterpret_cast<void*>(data_.data()));
   glGenerateMipmap(GL_TEXTURE_2D);
@@ -43,6 +47,12 @@ Texture::Texture(const std::string& filepath) : id_(0), width_(0), height_(0) {
       stbi_load(filepath.c_str(), &width, &height, &channels, 4);
   if (!data) {
     spdlog::error("Texture failed to load from {}", filepath);
+    width_ = height_ = 2;
+    data_.resize(width_ * height_ * 4);
+    data_[0] = 0, data_[1] = 0, data_[2] = 0, data_[3] = C(255);
+    data_[4] = C(255), data_[5] = 0, data_[6] = C(128), data_[7] = C(255);
+    data_[8] = C(255), data_[9] = 0, data_[10] = C(128), data_[11] = C(255);
+    data_[12] = 0, data_[13] = 0, data_[14] = 0, data_[15] = C(255);
     return;
   }
   width_ = width;
