@@ -14,6 +14,7 @@
 #include "Component.h"
 #include "GL.h"
 #include "Shader.h"
+#include "Texture.h"
 
 namespace lucyrt {
 namespace graphic {
@@ -41,6 +42,8 @@ class Program : public Component {
   void SetVec3(const std::string& name, const glm::vec3& value);
   void SetVec4(const std::string& name, const glm::vec4& value);
   void SetMat4(const std::string& name, const glm::mat4& value);
+  void SetTexture(const std::string& name, const GLenum channel,
+                  const TextureRef value);
 
   virtual bool Initialize();
   virtual void Delete();

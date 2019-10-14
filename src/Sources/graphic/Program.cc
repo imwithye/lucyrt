@@ -6,6 +6,7 @@ using lucyrt::graphic::ProgramRef;
 using lucyrt::graphic::Shader;
 using lucyrt::graphic::ShaderRef;
 using lucyrt::graphic::ShaderTypes;
+using lucyrt::graphic::TextureRef;
 
 ProgramRef Program::New(const std::string& name, const ShaderRef vert,
                         const ShaderRef frag) {
@@ -74,6 +75,12 @@ void Program::SetMat4(const std::string& name, const glm::mat4& value) {
   glUseProgram(id_);
   glUniformMatrix4fv(glGetUniformLocation(id_, name.c_str()), 1, GL_FALSE,
                      value_ptr(value));
+}
+
+void Program::SetTexture(const std::string& name, const GLenum channel,
+                         const TextureRef value) {
+  value->Active(channel);
+  SetInt(name, channel - GL_TEXTURE0);
 }
 
 bool Program::Initialize() {

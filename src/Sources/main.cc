@@ -5,12 +5,28 @@
 
 using namespace lucyrt::graphic;  // NOLINT
 
-int main(int argc, const char** argv) {
-  if (argc <= 1) {
-    return -1;
-  }
+void fullscreen(int argc, const char** argv) {
+  (void)argc;
+  (void)argv;
+  App::Initialize(800, 600, "lucyrt");
+  ProgramRef pp_unlit =
+      Program::New("post-processing unlit", Shaders_postprocessing_unlit_vert,
+                   Shaders_postprocessing_unlit_frag);
+  pp_unlit->Initialize();
+  FullscreenRef fs = Fullscreen::New("texture");
+  fs->Initialize();
+  TextureRef tex = Texture::New("/home/yiwei/lucyrt/examples/tiles.png");
+  tex->Initialize();
+  App::Run([&](Context&) {
+    pp_unlit->SetTexture("tex", GL_TEXTURE0, tex);
+    fs->Draw(pp_unlit);
+  });
+}
 
-  spdlog::set_level(spdlog::level::trace);
+void mode(int argc, const char** argv) {
+  if (argc <= 1) {
+    return;
+  }
   App::Initialize(800, 600, "lucyrt");
   ModelRef model = Model::New("model", argv[1]);
   model->Initialize();
@@ -28,5 +44,10 @@ int main(int argc, const char** argv) {
     blinn_phong->SetVec3("LUCYRT_CAMERA_POS", c.transform.GetPos());
     model->Draw(blinn_phong);
   });
+}
+
+int main(int argc, const char** argv) {
+  spdlog::set_level(spdlog::level::trace);
+  fullscreen(argc, argv);
   return 0;
 }
