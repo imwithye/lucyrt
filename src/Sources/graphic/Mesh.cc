@@ -26,6 +26,9 @@ bool Mesh::Initialize() {
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                         reinterpret_cast<void *>(offsetof(Vertex, normal)));
   glEnableVertexAttribArray(1);
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                        reinterpret_cast<void *>(offsetof(Vertex, uv)));
+  glEnableVertexAttribArray(2);
   spdlog::trace("Mesh '{}(v:{}, i:{}, {})' initialized", name_, vertices.size(),
                 indices.size(), vao_);
   return true;

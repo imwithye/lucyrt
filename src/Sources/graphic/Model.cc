@@ -20,17 +20,19 @@ static void ProcessMesh(ModelRef m, aiMesh *aMesh, const aiScene *aScene) {
 
   for (unsigned int i = 0; i < aMesh->mNumVertices; i++) {
     Vertex vertex;
-    glm::vec3 vector;
     // positions
-    vector.x = aMesh->mVertices[i].x;
-    vector.y = aMesh->mVertices[i].y;
-    vector.z = aMesh->mVertices[i].z;
-    vertex.pos = vector;
+    vertex.pos.x = aMesh->mVertices[i].x;
+    vertex.pos.y = aMesh->mVertices[i].y;
+    vertex.pos.z = aMesh->mVertices[i].z;
     // normals
-    vector.x = aMesh->mNormals[i].x;
-    vector.y = aMesh->mNormals[i].y;
-    vector.z = aMesh->mNormals[i].z;
-    vertex.normal = vector;
+    vertex.normal.x = aMesh->mNormals[i].x;
+    vertex.normal.y = aMesh->mNormals[i].y;
+    vertex.normal.z = aMesh->mNormals[i].z;
+    // uvs
+    if (aMesh->mTextureCoords[0]) {
+      vertex.uv.x = aMesh->mTextureCoords[0][i].x;
+      vertex.uv.y = aMesh->mTextureCoords[0][i].y;
+    }
     mesh->vertices.push_back(vertex);
   }
   for (size_t i = 0; i < aMesh->mNumFaces; i++) {

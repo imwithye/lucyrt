@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
@@ -18,8 +19,9 @@ namespace graphic {
 struct Vertex {
   glm::vec3 pos;
   glm::vec3 normal;
+  glm::vec2 uv;
   inline bool operator==(const Vertex &rhs) const {
-    return pos == rhs.pos && normal == rhs.normal;
+    return pos == rhs.pos && normal == rhs.normal && uv == rhs.uv;
   }
 };
 

@@ -23,7 +23,7 @@ void fullscreen(int argc, const char** argv) {
   });
 }
 
-void mode(int argc, const char** argv) {
+void model(int argc, const char** argv) {
   if (argc <= 1) {
     return;
   }
@@ -48,6 +48,7 @@ void mode(int argc, const char** argv) {
 
 int main(int argc, const char** argv) {
   spdlog::set_level(spdlog::level::trace);
-  fullscreen(argc, argv);
+  // fullscreen(argc, argv);
+  model(argc, argv);
   return 0;
 }
