@@ -9,9 +9,9 @@ void fullscreen(int argc, const char** argv) {
   (void)argc;
   (void)argv;
   App::Initialize(800, 600, "lucyrt");
-  ProgramRef pp_unlit =
-      Program::New("post-processing unlit", Shaders_postprocessing_unlit_vert,
-                   Shaders_postprocessing_unlit_frag);
+  ShaderRef pp_unlit =
+      Shader::New("post-processing unlit", Shaders_postprocessing_unlit_vert,
+                  Shaders_postprocessing_unlit_frag);
   pp_unlit->Initialize();
   FullscreenRef fs = Fullscreen::New("texture");
   fs->Initialize();
@@ -30,8 +30,8 @@ void model(int argc, const char** argv) {
   App::Initialize(800, 600, "lucyrt");
   ModelRef model = Model::New("model", argv[1]);
   model->Initialize();
-  ProgramRef blinn_phong = Program::New("blinn-phong", Shaders_blinn_phong_vert,
-                                        Shaders_blinn_phong_frag);
+  ShaderRef blinn_phong = Shader::New("blinn-phong", Shaders_blinn_phong_vert,
+                                      Shaders_blinn_phong_frag);
   blinn_phong->Initialize();
   App::Run([&](Context& ctx) {
     glEnable(GL_DEPTH_TEST);
@@ -47,7 +47,7 @@ void model(int argc, const char** argv) {
 }
 
 int main(int argc, const char** argv) {
-  spdlog::set_level(spdlog::level::info);
+  spdlog::set_level(spdlog::level::trace);
   // fullscreen(argc, argv);
   model(argc, argv);
   return 0;

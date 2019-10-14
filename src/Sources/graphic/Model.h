@@ -7,7 +7,7 @@
 
 #include "Component.h"
 #include "Mesh.h"
-#include "Program.h"
+#include "Shader.h"
 
 namespace lucyrt {
 namespace graphic {
@@ -21,7 +21,7 @@ class Model : public Component {
   static ModelRef New(const std::string &name, const std::string &filepath);
   bool Initialize();
   void Delete();
-  void Draw(ProgramRef program);
+  void Draw(ShaderRef program);
   ~Model();
 
  private:

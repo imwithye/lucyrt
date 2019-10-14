@@ -13,7 +13,6 @@ using lucyrt::graphic::Mesh;
 using lucyrt::graphic::MeshRef;
 using lucyrt::graphic::Model;
 using lucyrt::graphic::ModelRef;
-using lucyrt::graphic::ProgramRef;
 using lucyrt::graphic::Texture;
 using lucyrt::graphic::TextureRef;
 using lucyrt::graphic::Vertex;
@@ -116,7 +115,7 @@ void Model::Delete() {
   spdlog::trace("Model '{}(meshes: {})' deleted", name_, meshes.size());
 }
 
-void Model::Draw(ProgramRef program) {
+void Model::Draw(ShaderRef program) {
   for (MeshRef mesh : meshes) {
     mesh->Draw(program);
   }

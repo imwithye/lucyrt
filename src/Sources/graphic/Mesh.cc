@@ -46,7 +46,7 @@ void Mesh::Delete() {
                 indices.size());
 }
 
-void Mesh::Draw(ProgramRef program) {
+void Mesh::Draw(ShaderRef program) {
   program->SetMat4("LUCYRT_LOCAL_TO_WORLD", transform.GetMatrix());
   program->SetVec4("Diffuse", material.diffuse);
   for (TextureRef ref : material.textures) {

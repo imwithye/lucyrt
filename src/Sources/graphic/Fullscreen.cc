@@ -4,14 +4,13 @@
 using glm::vec3;
 using lucyrt::graphic::Fullscreen;
 using lucyrt::graphic::FullscreenRef;
-using lucyrt::graphic::Program;
 
 FullscreenRef Fullscreen::New(const std::string &name) {
   FullscreenRef ref(new Fullscreen(name));
   return ref;
 }
 
-void Fullscreen::Draw(ProgramRef program) {
+void Fullscreen::Draw(ShaderRef program) {
   program->Use();
   glBindVertexArray(vao_);
   glDrawArrays(GL_TRIANGLES, 0, 6);

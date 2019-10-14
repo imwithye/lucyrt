@@ -11,7 +11,7 @@
 
 #include "Component.h"
 #include "GL.h"
-#include "Program.h"
+#include "Shader.h"
 #include "Texture.h"
 #include "TransformationMatrix.h"
 
@@ -45,7 +45,7 @@ class Mesh final : public Component {
   static MeshRef New(const std::string &name);
   bool Initialize();
   void Delete();
-  void Draw(ProgramRef program);
+  void Draw(ShaderRef program);
   ~Mesh();
 
  private:

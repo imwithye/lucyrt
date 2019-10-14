@@ -8,7 +8,7 @@
 
 #include "Component.h"
 #include "GL.h"
-#include "Program.h"
+#include "Shader.h"
 
 namespace lucyrt {
 namespace graphic {
@@ -23,7 +23,7 @@ class Fullscreen : public Component {
 
   bool Initialize();
   void Delete();
-  void Draw(ProgramRef program);
+  void Draw(ShaderRef program);
   ~Fullscreen();
 
  private:
