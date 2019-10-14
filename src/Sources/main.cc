@@ -14,7 +14,8 @@ void fullscreen(int argc, const char** argv) {
       Shaders_postprocessing_unlit_frag);
   FullscreenRef fs = Fullscreen::New("texture");
   fs->Initialize();
-  TextureRef tex = Texture::New("/home/yiwei/lucyrt/examples/tiles.png");
+  std::shared_ptr<Texture> tex =
+      std::make_shared<Texture>("/home/yiwei/lucyrt/examples/tiles.png");
   App::Run([&](Context&) {
     pp_unlit->SetTexture("tex", GL_TEXTURE0, tex);
     fs->Draw(pp_unlit.get());

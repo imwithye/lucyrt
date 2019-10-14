@@ -32,7 +32,7 @@ class Shader {
   inline GLuint GetId() const { return id_; }
 
   glm::vec4 diffuse;
-  TextureRef diffuse_texture;
+  std::shared_ptr<Texture> diffuse_texture;
 
   void Use();
   void SetBool(const std::string& name, const GLboolean value);
@@ -42,7 +42,7 @@ class Shader {
   void SetVec4(const std::string& name, const glm::vec4& value);
   void SetMat4(const std::string& name, const glm::mat4& value);
   void SetTexture(const std::string& name, const GLenum channel,
-                  const TextureRef value);
+                  const std::shared_ptr<Texture> value);
 
  private:
   GLuint id_;

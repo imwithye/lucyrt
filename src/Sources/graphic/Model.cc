@@ -14,17 +14,17 @@ using lucyrt::graphic::MeshRef;
 using lucyrt::graphic::Model;
 using lucyrt::graphic::ModelRef;
 using lucyrt::graphic::Texture;
-using lucyrt::graphic::TextureRef;
 using lucyrt::graphic::Vertex;
 
-static std::vector<TextureRef> loadMaterialTextures(
+static std::vector<std::shared_ptr<Texture>> loadMaterialTextures(
     aiMaterial *mat, aiTextureType type, const std::string &typeName) {
-  std::vector<TextureRef> textures;
+  std::vector<std::shared_ptr<Texture>> textures;
   for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
     aiString str;
     mat->GetTexture(type, i, &str);
     std::string filepath(str.C_Str());
-    TextureRef tex = Texture::New("../examples/" + filepath);
+    std::shared_ptr<Texture> tex =
+        std::make_shared<Texture>("../examples/" + filepath);
     textures.push_back(tex);
   }
   return textures;
@@ -60,7 +60,7 @@ static void ProcessMesh(ModelRef m, aiMesh *aMesh, const aiScene *aScene) {
   aiColor3D aColor(0.f, 0.f, 0.f);
   aMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aColor);
   mesh->shader->diffuse = glm::vec4(aColor.r, aColor.g, aColor.b, 1.0f);
-  std::vector<TextureRef> diffuse_maps =
+  std::vector<std::shared_ptr<Texture>> diffuse_maps =
       loadMaterialTextures(aMaterial, aiTextureType_DIFFUSE, "texture_diffuse");
   if (diffuse_maps.size() > 0) {
     mesh->shader->diffuse_texture = diffuse_maps[0];

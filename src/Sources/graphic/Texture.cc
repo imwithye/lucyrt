@@ -6,14 +6,8 @@
 #include <iostream>
 
 using lucyrt::graphic::Texture;
-using lucyrt::graphic::TextureRef;
 
 #define C(x) static_cast<GLbyte>(x)
-
-TextureRef Texture::New(const std::string& filepath) {
-  TextureRef ref(new Texture(filepath));
-  return ref;
-}
 
 void Texture::Active(GLenum unit) {
   glActiveTexture(unit);

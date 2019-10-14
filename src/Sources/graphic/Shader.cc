@@ -2,7 +2,6 @@
 #include "Shader.h"
 
 using lucyrt::graphic::Shader;
-using lucyrt::graphic::TextureRef;
 
 Shader::Shader(const std::string& name, const std::string& vert,
                const std::string& frag, const std::string& geom)
@@ -119,7 +118,7 @@ void Shader::SetMat4(const std::string& name, const glm::mat4& value) {
 }
 
 void Shader::SetTexture(const std::string& name, const GLenum channel,
-                        const TextureRef value) {
+                        const std::shared_ptr<Texture> value) {
   value->Active(channel);
   SetInt(name, channel - GL_TEXTURE0);
 }
