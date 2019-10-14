@@ -99,7 +99,7 @@ ModelRef Model::New(const std::string &name, const std::string &filepath) {
 
 bool Model::Initialize() {
   for (MeshRef mesh : meshes) {
-    mesh->Initialize();
+    mesh->PrepareToGPU();
   }
   spdlog::trace("Model '{}(meshes: {})' initialized", name_, meshes.size());
   return true;
@@ -107,7 +107,7 @@ bool Model::Initialize() {
 
 void Model::Delete() {
   for (MeshRef mesh : meshes) {
-    mesh->Delete();
+    mesh->RemoveFromGPU();
   }
   spdlog::trace("Model '{}(meshes: {})' deleted", name_, meshes.size());
 }

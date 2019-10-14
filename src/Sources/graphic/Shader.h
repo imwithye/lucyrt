@@ -26,7 +26,7 @@ class Shader {
   ~Shader();
   template <typename OStream>
   friend OStream& operator<<(OStream& os, const Shader* s) {
-    return os << "Shader[" << s->name << "(" << s->id_ << ")]";
+    return os << "Shader[" << s->name << "(id:" << s->id_ << ")]";
   }
 
   inline GLuint GetId() const { return id_; }

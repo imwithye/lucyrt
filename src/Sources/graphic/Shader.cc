@@ -74,12 +74,12 @@ Shader::Shader(const std::string& name, const std::string& vert,
   glDeleteShader(frag_shader_id);
   glDeleteShader(geom_shader_id);
   id_ = program_id;
-  spdlog::trace("{} initialized", this, id_);
+  spdlog::trace("{} initialized", this);
 }
 
 Shader::~Shader() {
   glDeleteProgram(id_);
-  spdlog::trace("{} deleted", this, id_);
+  spdlog::trace("{} deleted", this);
 }
 
 void Shader::Use() { glUseProgram(id_); }

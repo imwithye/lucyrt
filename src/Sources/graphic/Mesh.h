@@ -1,6 +1,8 @@
 // Copyright 2019
 #pragma once
 
+#include <spdlog/fmt/ostr.h>
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -9,7 +11,6 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "Component.h"
 #include "GL.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -21,7 +22,7 @@ struct Vertex {
   glm::vec3 pos;
   glm::vec3 normal;
   glm::vec2 uv;
-  inline bool operator==(const Vertex &rhs) const {
+  inline bool operator==(const Vertex& rhs) const {
     return pos == rhs.pos && normal == rhs.normal && uv == rhs.uv;
   }
 };
@@ -29,7 +30,7 @@ struct Vertex {
 class Mesh;
 typedef std::shared_ptr<Mesh> MeshRef;
 
-class Mesh final : public Component {
+class Mesh {
  public:
   std::string name;
   std::vector<Vertex> vertices;
@@ -37,16 +38,21 @@ class Mesh final : public Component {
   TransformationMatrix transform;
   std::shared_ptr<Shader> shader;
 
-  static MeshRef New(const std::string &name);
-  bool Initialize();
-  void Delete();
-  void Draw();
+  explicit Mesh(const std::string& name);
   ~Mesh();
+  template <typename OStream>
+  friend OStream& operator<<(OStream& os, const Mesh* m) {
+    return os << "Mesh[" << m->name << "(v:" << m->vertices.size()
+              << " i:" << m->indices.size() << " vao:" << m->vao_ << ")]";
+  }
+
+  static MeshRef New(const std::string& name);
+  bool PrepareToGPU();
+  void RemoveFromGPU();
+  void Draw();
 
  private:
   GLuint vao_, vbo_, ebo_;
-
-  explicit Mesh(const std::string &name);
 };
 }  // namespace graphic
 }  // namespace lucyrt

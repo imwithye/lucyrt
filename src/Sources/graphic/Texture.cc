@@ -14,7 +14,10 @@ void Texture::Active(GLenum unit) {
   glBindTexture(GL_TEXTURE_2D, id_);
 }
 
-Texture::~Texture() { glDeleteTextures(1, &id_); }
+Texture::~Texture() {
+  glDeleteTextures(1, &id_);
+  spdlog::trace("{} deleted", this);
+}
 
 Texture::Texture(const std::string& filepath) : id_(0), width_(0), height_(0) {
   stbi_set_flip_vertically_on_load(true);

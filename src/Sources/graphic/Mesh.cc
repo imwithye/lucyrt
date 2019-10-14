@@ -12,7 +12,17 @@ MeshRef Mesh::New(const std::string &name) {
   return mesh;
 }
 
-bool Mesh::Initialize() {
+Mesh::Mesh(const std::string &name) : name(name), vao_(0), vbo_(0), ebo_(0) {
+  shader = std::make_shared<Shader>("shader", Shaders_blinn_phong_vert,
+                                    Shaders_blinn_phong_frag);
+}
+
+Mesh::~Mesh() {
+  RemoveFromGPU();
+  spdlog::trace("{} deleted", this);
+}
+
+bool Mesh::PrepareToGPU() {
   glGenVertexArrays(1, &vao_);
   glGenBuffers(1, &vbo_);
   glGenBuffers(1, &ebo_);
@@ -32,18 +42,16 @@ bool Mesh::Initialize() {
   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                         reinterpret_cast<void *>(offsetof(Vertex, uv)));
   glEnableVertexAttribArray(2);
-
-  spdlog::trace("Mesh '{}(v:{}, i:{}, {})' initialized", name, vertices.size(),
-                indices.size(), vao_);
+  spdlog::trace("{} loaded to GPU", this, vao_);
   return true;
 }
 
-void Mesh::Delete() {
+void Mesh::RemoveFromGPU() {
   glDeleteBuffers(1, &ebo_);
   glDeleteBuffers(1, &vbo_);
   glDeleteVertexArrays(1, &vao_);
-  spdlog::trace("Mesh '{}(v:{}, i:{})' deleted", name, vertices.size(),
-                indices.size());
+  vao_ = vbo_ = ebo_ = 0;
+  spdlog::trace("{} removed from GPU", this);
 }
 
 void Mesh::Draw() {
@@ -59,11 +67,4 @@ void Mesh::Draw() {
   glBindVertexArray(vao_);
   glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
   glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-Mesh::~Mesh() { Delete(); }
-
-Mesh::Mesh(const std::string &name) : name(name) {
-  shader = std::make_shared<Shader>("shader", Shaders_blinn_phong_vert,
-                                    Shaders_blinn_phong_frag);
 }
