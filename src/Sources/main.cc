@@ -30,9 +30,6 @@ void model(int argc, const char** argv) {
   App::Initialize(800, 600, "lucyrt");
   ModelRef model = Model::New("model", argv[1]);
   model->Initialize();
-  ShaderRef blinn_phong = Shader::New("blinn-phong", Shaders_blinn_phong_vert,
-                                      Shaders_blinn_phong_frag);
-  blinn_phong->Initialize();
   App::Run([&](Context& ctx) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
@@ -40,9 +37,7 @@ void model(int argc, const char** argv) {
     glCullFace(GL_BACK);
 
     Camera c = ctx.GetCamera();
-    blinn_phong->SetMat4("LUCYRT_WORLD_TO_CAMERA", c.GetWorldToCamera());
-    blinn_phong->SetVec3("LUCYRT_CAMERA_POS", c.transform.GetPos());
-    model->Draw(blinn_phong);
+    model->Draw();
   });
 }
 

@@ -30,6 +30,9 @@ class Shader : public Component {
   inline std::string GetName() const { return name_; }
   inline GLuint GetId() const { return id_; }
 
+  glm::vec4 diffuse;
+  TextureRef diffuse_texture;
+
   void Use();
   void SetBool(const std::string& name, const GLboolean value);
   void SetInt(const std::string& name, const GLint value);

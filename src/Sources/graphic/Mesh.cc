@@ -1,6 +1,9 @@
 // Copyright 2019
 #include "Mesh.h"
 
+#include "App.h"
+#include "resource/rs.h"
+
 using lucyrt::graphic::Mesh;
 using lucyrt::graphic::MeshRef;
 
@@ -30,9 +33,9 @@ bool Mesh::Initialize() {
                         reinterpret_cast<void *>(offsetof(Vertex, uv)));
   glEnableVertexAttribArray(2);
 
-  for (TextureRef ref : material.textures) {
-    ref->Initialize();
-  }
+  shader->Initialize();
+  if (shader->diffuse_texture) shader->diffuse_texture->Initialize();
+
   spdlog::trace("Mesh '{}(v:{}, i:{}, {})' initialized", name, vertices.size(),
                 indices.size(), vao_);
   return true;
@@ -46,17 +49,24 @@ void Mesh::Delete() {
                 indices.size());
 }
 
-void Mesh::Draw(ShaderRef program) {
-  program->SetMat4("LUCYRT_LOCAL_TO_WORLD", transform.GetMatrix());
-  program->SetVec4("Diffuse", material.diffuse);
-  for (TextureRef ref : material.textures) {
-    program->SetTexture("DiffuseTexture0", GL_TEXTURE0, ref);
-  }
-  program->Use();
+void Mesh::Draw() {
+  shader->SetMat4("LUCYRT_WORLD_TO_CAMERA",
+                  App::GetContext()->GetCamera().GetWorldToCamera());
+  shader->SetVec3("LUCYRT_CAMERA_POS",
+                  App::GetContext()->GetCamera().transform.GetPos());
+  shader->SetMat4("LUCYRT_LOCAL_TO_WORLD", transform.GetMatrix());
+  shader->SetVec4("Diffuse", shader->diffuse);
+  if (shader->diffuse_texture)
+    shader->SetTexture("DiffuseTexture0", GL_TEXTURE0, shader->diffuse_texture);
+  shader->Use();
   glBindVertexArray(vao_);
   glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
+  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 Mesh::~Mesh() { Delete(); }
 
-Mesh::Mesh(const std::string &name) : name(name) {}
+Mesh::Mesh(const std::string &name) : name(name) {
+  shader =
+      Shader::New("shader", Shaders_blinn_phong_vert, Shaders_blinn_phong_frag);
+}

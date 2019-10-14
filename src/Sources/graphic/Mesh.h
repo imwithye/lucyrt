@@ -26,11 +26,6 @@ struct Vertex {
   }
 };
 
-struct Material {
-  glm::vec4 diffuse;
-  std::vector<TextureRef> textures;
-};
-
 class Mesh;
 typedef std::shared_ptr<Mesh> MeshRef;
 
@@ -40,12 +35,12 @@ class Mesh final : public Component {
   std::vector<Vertex> vertices;
   std::vector<GLuint> indices;
   TransformationMatrix transform;
-  Material material;
+  ShaderRef shader;
 
   static MeshRef New(const std::string &name);
   bool Initialize();
   void Delete();
-  void Draw(ShaderRef program);
+  void Draw();
   ~Mesh();
 
  private:

@@ -59,15 +59,12 @@ static void ProcessMesh(ModelRef m, aiMesh *aMesh, const aiScene *aScene) {
   aiMaterial *aMaterial = aScene->mMaterials[aMesh->mMaterialIndex];
   aiColor3D aColor(0.f, 0.f, 0.f);
   aMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aColor);
-  mesh->material.diffuse = glm::vec4(aColor.r, aColor.g, aColor.b, 1.0f);
+  mesh->shader->diffuse = glm::vec4(aColor.r, aColor.g, aColor.b, 1.0f);
   std::vector<TextureRef> diffuse_maps =
       loadMaterialTextures(aMaterial, aiTextureType_DIFFUSE, "texture_diffuse");
-  mesh->material.textures.insert(mesh->material.textures.end(),
-                                 diffuse_maps.begin(), diffuse_maps.end());
-  std::vector<TextureRef> specular_maps = loadMaterialTextures(
-      aMaterial, aiTextureType_SPECULAR, "texture_specular");
-  mesh->material.textures.insert(mesh->material.textures.end(),
-                                 specular_maps.begin(), specular_maps.end());
+  if (diffuse_maps.size() > 0) {
+    mesh->shader->diffuse_texture = diffuse_maps[0];
+  }
   m->meshes.push_back(mesh);
 }
 
@@ -115,9 +112,9 @@ void Model::Delete() {
   spdlog::trace("Model '{}(meshes: {})' deleted", name_, meshes.size());
 }
 
-void Model::Draw(ShaderRef program) {
+void Model::Draw() {
   for (MeshRef mesh : meshes) {
-    mesh->Draw(program);
+    mesh->Draw();
   }
 }
 
