@@ -29,6 +29,6 @@ void main() {
   vec3 specular = 0.5 * spec * LUCYRT_LIGHT_COLOR;
 
   FragColor = vec4((diffuse + ambient + specular), 1) *
-              mix(texture2D(DiffuseTexture0, UV), Diffuse, 0.7);
+              mix(texture(DiffuseTexture0, UV), Diffuse, 0.7);
   FragColor.rgb = pow(FragColor.rgb, vec3(1.0 / LUCYRT_GAMMA));
 }
