@@ -1,5 +1,9 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -fvisibility=hidden -std=c++11")
 
+if(NOT WIN32)
+  set(GLAD_LIBRARIES dl)
+endif()
+
 option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 option(ASSIMP_BUILD_SAMPLES OFF)
 option(ASSIMP_BUILD_TESTS OFF)
@@ -22,4 +26,4 @@ add_library(vendors STATIC ${SOURCES})
 target_include_directories(assimp PUBLIC
                   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/assimp/include>
                   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/assimp/include>)
-target_link_libraries(vendors assimp glfw ${GLFW_LIBRARIES} spdlog)
+target_link_libraries(vendors assimp glfw ${GLFW_LIBRARIES} ${GLAD_LIBRARIES} spdlog)
