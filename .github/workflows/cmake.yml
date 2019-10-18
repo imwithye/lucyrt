@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: CMake
 
 on: [push]
 
@@ -9,9 +9,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: output directory
-      run: mkdir -p build && cd build
-    - name: cmake
-      run: cmake ..
-    - name: make
-      run: make
+    - name: build
+      run: |
+        mkdir -p build
+        cd build
+        cmake ..
+        make
