@@ -3,12 +3,13 @@ name: CMake
 on: [push]
 
 jobs:
-  build:
-
+  build-linux:
+    name: Build for Linux
     runs-on: ubuntu-latest
-    
     steps:
     - uses: actions/checkout@v1
+    - name: install deps
+      run: apt install -y xorg-dev
     - name: build
       run: |
         mkdir -p build
