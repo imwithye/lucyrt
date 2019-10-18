@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: install deps
-      run: apt install -y xorg-dev
+      run: sudo apt install -y xorg-dev
     - name: build
       run: |
         mkdir -p build
