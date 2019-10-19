@@ -59,7 +59,7 @@ static void ProcessMesh(Model *m, aiMesh *aMesh, const aiScene *aScene) {
   aiColor3D aColor(0.f, 0.f, 0.f);
   aMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aColor);
   mesh->shader->diffuse = glm::vec4(aColor.r, aColor.g, aColor.b, 1.0f);
-  std::vector<std::shared_ptr<Texture>> diffuse_maps =
+  std::vector<TexturePtr> diffuse_maps =
       loadMaterialTextures(aMaterial, aiTextureType_DIFFUSE, "texture_diffuse");
   if (diffuse_maps.size() > 0) {
     mesh->shader->diffuse_texture = diffuse_maps[0];

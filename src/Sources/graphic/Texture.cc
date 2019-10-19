@@ -10,11 +10,21 @@ using lucyrt::graphic::TexturePtr;
 
 #define C(x) static_cast<GLbyte>(x)
 
+std::unordered_map<std::string, TexturePtr*> Texture::library_;
+
 TexturePtr Texture::Load(const std::string& filepath) {
-  return std::shared_ptr<Texture>(new Texture(filepath), Delete);
+  if (library_.find(filepath) == library_.end()) {
+    TexturePtr ptr = std::shared_ptr<Texture>(new Texture(filepath), Delete);
+    library_[filepath] = &ptr;
+    return ptr;
+  }
+  return *library_[filepath];
 }
 
-void Texture::Delete(Texture* texture) { delete texture; }
+void Texture::Delete(Texture* texture) {
+  library_.erase(texture->filepath);
+  delete texture;
+}
 
 void Texture::Active(GLenum unit) {
   glActiveTexture(unit);
@@ -26,7 +36,8 @@ Texture::~Texture() {
   spdlog::trace("{} deleted", this);
 }
 
-Texture::Texture(const std::string& filepath) : id_(0), width_(0), height_(0) {
+Texture::Texture(const std::string& filepath)
+    : filepath(filepath), id_(0), width_(0), height_(0) {
   stbi_set_flip_vertically_on_load(true);
   int width = 0, height = 0, channels = 0;
   unsigned char* data =

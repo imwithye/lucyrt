@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "GL.h"
@@ -16,19 +17,20 @@ typedef std::shared_ptr<Texture> TexturePtr;
 
 class Texture {
  public:
-  std::string name;
+  std::string filepath;
 
   static TexturePtr Load(const std::string& filepath);
   static void Delete(Texture* texture);
 
  private:
+  static std::unordered_map<std::string, TexturePtr*> library_;
   explicit Texture(const std::string& filepath);
   ~Texture();
 
  public:
   template <typename OStream>
   friend OStream& operator<<(OStream& os, const Texture* t) {
-    return os << "Texture[" << t->name << "(id:" << t->id_ << ")]";
+    return os << "Texture[" << t->filepath << "(id:" << t->id_ << ")]";
   }
 
   void Active(GLenum uint);
