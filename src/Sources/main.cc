@@ -26,7 +26,7 @@ void model(int argc, const char** argv) {
     return;
   }
   App::Initialize(800, 600, "lucyrt");
-  ModelPtr model = Model::LoadWithAssimp("model", argv[1]);
+  ModelPtr model = Model::LoadWithVRcollab("model", argv[1]);
   model->PrepareToGPU();
   App::Run([&](Context* ctx) {
     glEnable(GL_DEPTH_TEST);
@@ -39,7 +39,7 @@ void model(int argc, const char** argv) {
 }
 
 int main(int argc, const char** argv) {
-  spdlog::set_level(spdlog::level::trace);
+  spdlog::set_level(spdlog::level::debug);
   // fullscreen(argc, argv);
   model(argc, argv);
   return 0;

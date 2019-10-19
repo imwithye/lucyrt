@@ -61,7 +61,7 @@ void Mesh::RemoveFromGPU() {
 
 void Mesh::Draw(Context *ctx) {
   ctx->PrepareShader(shader.get());
-  shader->SetMat4("LUCYRT_LOCAL_TO_WORLD", transform.GetMatrix());
+  shader->SetMat4("LUCYRT_LOCAL_TO_WORLD", transform.matrix);
   shader->SetVec4("Diffuse", shader->diffuse);
   if (shader->diffuse_texture)
     shader->SetTexture("DiffuseTexture0", GL_TEXTURE0, shader->diffuse_texture);
