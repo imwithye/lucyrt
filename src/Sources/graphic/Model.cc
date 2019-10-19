@@ -12,17 +12,17 @@
 using lucyrt::graphic::Mesh;
 using lucyrt::graphic::Model;
 using lucyrt::graphic::Texture;
+using lucyrt::graphic::TexturePtr;
 using lucyrt::graphic::Vertex;
 
-static std::vector<std::shared_ptr<Texture>> loadMaterialTextures(
+static std::vector<TexturePtr> loadMaterialTextures(
     aiMaterial *mat, aiTextureType type, const std::string &typeName) {
-  std::vector<std::shared_ptr<Texture>> textures;
+  std::vector<TexturePtr> textures;
   for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
     aiString str;
     mat->GetTexture(type, i, &str);
     std::string filepath(str.C_Str());
-    std::shared_ptr<Texture> tex =
-        std::make_shared<Texture>("../examples/" + filepath);
+    TexturePtr tex = Texture::Load("../examples/" + filepath);
     textures.push_back(tex);
   }
   return textures;

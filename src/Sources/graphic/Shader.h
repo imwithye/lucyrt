@@ -22,6 +22,8 @@ typedef std::shared_ptr<Shader> ShaderPtr;
 
 class Shader {
  public:
+  std::string name;
+
   static ShaderPtr Compile(const std::string& name, const std::string& vert,
                            const std::string& frag,
                            const std::string& geom = "");
@@ -33,8 +35,6 @@ class Shader {
   ~Shader();
 
  public:
-  std::string name;
-
   template <typename OStream>
   friend OStream& operator<<(OStream& os, const Shader* s) {
     return os << "Shader[" << s->name << "(id:" << s->id_ << ")]";
@@ -43,7 +43,7 @@ class Shader {
   inline GLuint GetId() const { return id_; }
 
   glm::vec4 diffuse;
-  std::shared_ptr<Texture> diffuse_texture;
+  TexturePtr diffuse_texture;
 
   void Use();
   void SetBool(const std::string& name, const GLboolean value);
@@ -53,7 +53,7 @@ class Shader {
   void SetVec4(const std::string& name, const glm::vec4& value);
   void SetMat4(const std::string& name, const glm::mat4& value);
   void SetTexture(const std::string& name, const GLenum channel,
-                  Texture* value);
+                  TexturePtr value);
 
  private:
   GLuint id_;

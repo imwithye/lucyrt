@@ -14,9 +14,9 @@ void fullscreen(int argc, const char** argv) {
                                        Shaders_postprocessing_unlit_frag);
   FullscreenRef fs = Fullscreen::New("texture");
   fs->Initialize();
-  Texture tex("/home/yiwei/lucyrt/examples/tiles.png");
+  TexturePtr tex = Texture::Load("/home/yiwei/lucyrt/examples/tiles.png");
   App::Run([&](Context*) {
-    pp_unlit->SetTexture("tex", GL_TEXTURE0, &tex);
+    pp_unlit->SetTexture("tex", GL_TEXTURE0, tex);
     fs->Draw(pp_unlit.get());
   });
 }

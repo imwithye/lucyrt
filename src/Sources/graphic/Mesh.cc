@@ -53,8 +53,7 @@ void Mesh::Draw(Context *ctx) {
   shader->SetMat4("LUCYRT_LOCAL_TO_WORLD", transform.GetMatrix());
   shader->SetVec4("Diffuse", shader->diffuse);
   if (shader->diffuse_texture)
-    shader->SetTexture("DiffuseTexture0", GL_TEXTURE0,
-                       shader->diffuse_texture.get());
+    shader->SetTexture("DiffuseTexture0", GL_TEXTURE0, shader->diffuse_texture);
   shader->Use();
   glBindVertexArray(vao_);
   glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);

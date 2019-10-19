@@ -126,7 +126,7 @@ void Shader::SetMat4(const std::string& name, const glm::mat4& value) {
 }
 
 void Shader::SetTexture(const std::string& name, const GLenum channel,
-                        Texture* value) {
+                        TexturePtr value) {
   value->Active(channel);
   SetInt(name, channel - GL_TEXTURE0);
 }

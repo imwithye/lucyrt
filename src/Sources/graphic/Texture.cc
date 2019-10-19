@@ -6,8 +6,15 @@
 #include <iostream>
 
 using lucyrt::graphic::Texture;
+using lucyrt::graphic::TexturePtr;
 
 #define C(x) static_cast<GLbyte>(x)
+
+TexturePtr Texture::Load(const std::string& filepath) {
+  return std::shared_ptr<Texture>(new Texture(filepath), Delete);
+}
+
+void Texture::Delete(Texture* texture) { delete texture; }
 
 void Texture::Active(GLenum unit) {
   glActiveTexture(unit);
