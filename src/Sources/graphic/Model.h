@@ -11,12 +11,24 @@
 
 namespace lucyrt {
 namespace graphic {
+class Model;
+typedef std::shared_ptr<Model> ModelPtr;
+
 class Model {
  public:
-  std::vector<std::shared_ptr<Mesh>> meshes;
+  std::vector<MeshPtr> meshes;
 
-  explicit Model(const std::string& name, const std::string& filepath);
+  static ModelPtr LoadWithAssimp(const std::string& name,
+                                 const std::string& filepath);
+  static ModelPtr LoadWithVRcollab(const std::string& name,
+                                   const std::string& dirpath);
+  static void Delete(Model* model);
+
+ private:
+  explicit Model(const std::string& name);
   ~Model();
+
+ public:
   template <typename OStream>
   friend OStream& operator<<(OStream& os, const Model* m) {
     return os << "Model[" << m->name << "(meshes:" << m->meshes.size() << ")]";

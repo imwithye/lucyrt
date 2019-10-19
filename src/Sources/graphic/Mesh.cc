@@ -5,6 +5,17 @@
 #include "resource/rs.h"  //NOLINT
 
 using lucyrt::graphic::Mesh;
+using lucyrt::graphic::MeshPtr;
+
+MeshPtr Mesh::New(const std::string &name, size_t number_of_vertices,
+                  size_t number_of_indices) {
+  MeshPtr ptr = std::shared_ptr<Mesh>(new Mesh(name), Delete);
+  ptr->vertices.resize(number_of_vertices);
+  ptr->indices.resize(number_of_indices);
+  return ptr;
+}
+
+void Mesh::Delete(Mesh *mesh) { delete mesh; }
 
 Mesh::Mesh(const std::string &name) : name(name), vao_(0), vbo_(0), ebo_(0) {
   shader = Shader::Compile("shader", Shaders_blinn_phong_vert,

@@ -26,15 +26,15 @@ void model(int argc, const char** argv) {
     return;
   }
   App::Initialize(800, 600, "lucyrt");
-  Model model("model", argv[1]);
-  model.PrepareToGPU();
+  ModelPtr model = Model::LoadWithAssimp("model", argv[1]);
+  model->PrepareToGPU();
   App::Run([&](Context* ctx) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
-    model.Draw(ctx);
+    model->Draw(ctx);
   });
 }
 

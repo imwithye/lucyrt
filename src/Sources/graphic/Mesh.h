@@ -28,6 +28,9 @@ struct Vertex {
   }
 };
 
+class Mesh;
+typedef std::shared_ptr<Mesh> MeshPtr;
+
 class Mesh {
  public:
   std::string name;
@@ -36,8 +39,15 @@ class Mesh {
   TransformationMatrix transform;
   ShaderPtr shader;
 
+  static MeshPtr New(const std::string& name, size_t number_of_vertices = 0,
+                     size_t number_of_indices = 0);
+  static void Delete(Mesh* mesh);
+
+ private:
   explicit Mesh(const std::string& name);
   ~Mesh();
+
+ public:
   template <typename OStream>
   friend OStream& operator<<(OStream& os, const Mesh* m) {
     return os << "Mesh[" << m->name << "(v:" << m->vertices.size()
