@@ -3,6 +3,7 @@
 
 #include <assimp/postprocess.h>  //NOLINT
 #include <assimp/scene.h>
+#include <sqlite3.h>
 #include <stdlib.h>
 
 #include <fstream>  //NOLINT
@@ -11,6 +12,7 @@
 #include <assimp/Importer.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <nlohmann/json.hpp>
 
 #include "Mesh.h"
 #include "Texture.h"
@@ -107,10 +109,11 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
                                  const std::string &dirpath) {
   (void)dirpath;
   ModelPtr ptr = std::shared_ptr<Model>(new Model(name), Delete);
-  class FReader {
+
+  class GeometryReader {
    public:
     std::ifstream handle;
-    explicit FReader(const std::string &path)
+    explicit GeometryReader(const std::string &path)
         : handle(path, std::ifstream::in) {}
     int ReadInt() {
       int out;
@@ -130,36 +133,81 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       data[len] = '\0';
       return std::string(data.data());
     }
-    ~FReader() { handle.close(); }
+    ~GeometryReader() {
+      if (handle.is_open()) {
+        handle.close();
+      }
+    }
   };
+  GeometryReader g_reader("../examples/sample_revit/geometry.vrc");
 
-  FReader reader("../examples/sample_revit/geometry.vrc");
+  class MaterialReader {
+   public:
+    sqlite3 *db = nullptr;
 
-  int number_of_meshes = reader.ReadInt();
+    explicit MaterialReader(const std::string &path) : db(nullptr) {
+      sqlite3_open(path.c_str(), &db);
+    }
+
+    glm::vec4 ReadDiffuse(int id) {
+      glm::vec4 diffuse(1.0f, 1.0f, 1.0f, 1.0f);
+      sqlite3_stmt *stmt;
+      std::string query = "select StandardData from MaterialTable where Id = ";
+      query += std::to_string(id);
+      sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, 0);
+      int step = sqlite3_step(stmt);
+      if (step != SQLITE_DONE) {
+        const unsigned char *data = sqlite3_column_text(stmt, 0);
+        if (data != nullptr) {
+          nlohmann::json json_data = nlohmann::json::parse(data);
+          float r = json_data["ConceptualColor"]["r"];
+          float g = json_data["ConceptualColor"]["g"];
+          float b = json_data["ConceptualColor"]["b"];
+          float a = json_data["ConceptualColor"]["a"];
+          diffuse = glm::vec4(r, g, b, a);
+        }
+      }
+      sqlite3_finalize(stmt);
+      return diffuse;
+    }
+
+    ~MaterialReader() {
+      if (db) {
+        sqlite3_close(db);
+      }
+    }
+  };
+  MaterialReader m_reader("../examples/sample_revit/data.vrc");
+
+  int number_of_meshes = g_reader.ReadInt();
   for (int m = 0; m < number_of_meshes; m++) {
-    std::string name = reader.ReadString();  // Use mesh category as mesh name
+    std::string name = g_reader.ReadString();  // Use mesh category as mesh name
 
-    int number_of_submeshes = reader.ReadInt();
+    glm::vec4 diffuse(1.0f, 1.0f, 1.0f, 1.0f);
+    int number_of_submeshes = g_reader.ReadInt();
     std::vector<GLuint> indices;
     for (int s = 0; s < number_of_submeshes; s++) {
-      reader.ReadInt();  // Material ID
-      int number_of_faces = reader.ReadInt();
+      int material_id = g_reader.ReadInt();  // Material ID
+      if (material_id > 0) {
+        diffuse = m_reader.ReadDiffuse(material_id);
+      }
+      int number_of_faces = g_reader.ReadInt();
       for (int face_idx = 0; face_idx < number_of_faces; face_idx++) {
         // Read Triangle Vertex Index
-        indices.push_back(reader.ReadInt());
-        indices.push_back(reader.ReadInt());
-        indices.push_back(reader.ReadInt());
+        indices.push_back(g_reader.ReadInt());
+        indices.push_back(g_reader.ReadInt());
+        indices.push_back(g_reader.ReadInt());
       }
     }
 
-    int number_of_vertices = reader.ReadInt();
+    int number_of_vertices = g_reader.ReadInt();
     std::vector<Vertex> vertices;
     for (int v = 0; v < number_of_vertices; v++) {
-      float px = reader.ReadFloat(), py = reader.ReadFloat(),
-            pz = reader.ReadFloat();
-      float nx = reader.ReadFloat(), ny = reader.ReadFloat(),
-            nz = reader.ReadFloat();
-      float ux = reader.ReadFloat(), uy = reader.ReadFloat();
+      float px = g_reader.ReadFloat(), py = g_reader.ReadFloat(),
+            pz = g_reader.ReadFloat();
+      float nx = g_reader.ReadFloat(), ny = g_reader.ReadFloat(),
+            nz = g_reader.ReadFloat();
+      float ux = g_reader.ReadFloat(), uy = g_reader.ReadFloat();
       Vertex vertex{
           glm::vec3{px, py, pz},  // pos
           glm::vec3{nx, ny, nz},  // normal
@@ -168,13 +216,13 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       vertices.push_back(vertex);
     }
 
-    int number_of_instances = reader.ReadInt();
+    int number_of_instances = g_reader.ReadInt();
     for (int i = 0; i < number_of_instances; i++) {
-      reader.ReadInt();  // Element ID
+      g_reader.ReadInt();  // Element ID
       glm::mat4 matrix;
       for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
-          matrix[row][col] = reader.ReadFloat();
+          matrix[row][col] = g_reader.ReadFloat();
         }
       }
       matrix = glm::transpose(matrix);
@@ -184,7 +232,7 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       mesh->indices = indices;
       mesh->transform.matrix = matrix;
 
-      mesh->shader->diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+      mesh->shader->diffuse = diffuse;
       ptr->meshes.push_back(mesh);
     }
   }
