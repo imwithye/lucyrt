@@ -1,16 +1,28 @@
 cmake_minimum_required(VERSION 3.0)
 project(lucyrt)
 
-include_directories(
-  vendors/glad-3.3/include/
-  vendors/glfw-3.3/include/
-  vendors/glm-0.9.9.6/
-  vendors/imgui-1.73/
-  vendors/imgui-1.73/examples/
-  vendors/spdlog-1.4.2/include/spdlog/
-  vendors/stb_image-2.23/
-  src/Sources/)
+set(ASSIMP_DIR assimp-5.0.0)
+set(GLAD_DIR glad-3.3)
+set(GLFW_DIR glfw-3.3)
+set(GLM_DIR glm-0.9.9.6)
+set(IMGUI_DIR imgui-1.73)
+set(JSON_DIR json-3.7.0)
+set(SPDLOG_DIR spdlog-1.4.2)
+set(SQLITE_DIR sqlite-amalgamation-3300100)
+set(STB_IMAGE_DIR stb_image-2.23)
+
 add_subdirectory(vendors)
+include_directories(
+  vendors/${GLAD_DIR}/include/
+  vendors/${GLFW_DIR}/include/
+  vendors/${GLM_DIR}/
+  vendors/${IMGUI_DIR}/
+  vendors/${IMGUI_DIR}/examples/
+  vendors/${JSON_DIR}/
+  vendors/${SPDLOG_DIR}/include/spdlog/
+  vendors/${SQLITE_DIR}/
+  vendors/${STB_IMAGE_DIR}/
+  src/Sources/)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -fvisibility=hidden -std=c++11")
 

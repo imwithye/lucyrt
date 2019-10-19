@@ -7,18 +7,19 @@ endif()
 option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 option(ASSIMP_BUILD_SAMPLES OFF)
 option(ASSIMP_BUILD_TESTS OFF)
-add_subdirectory(assimp-5.0.0)
+add_subdirectory(${ASSIMP_DIR})
 
 option(GLFW_BUILD_DOCS OFF)
 option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
-add_subdirectory(glfw-3.3)
+add_subdirectory(${GLFW_DIR})
 
-add_subdirectory(spdlog-1.4.2)
+add_subdirectory(${SPDLOG_DIR})
 
-include_directories(imgui-1.73/examples)
+include_directories(${IMGUI_DIR}/ ${IMGUI_DIR}/examples/ ${GLAD_DIR}/include/)
 file(GLOB SOURCES glad-3.3/src/glad.c
-  imgui-1.73/*.cpp imgui-1.73/examples/imgui_impl_glfw.cpp imgui-1.73/examples/imgui_impl_opengl3.cpp)
+  ${IMGUI_DIR}/*.cpp ${IMGUI_DIR}/examples/imgui_impl_glfw.cpp ${IMGUI_DIR}/examples/imgui_impl_opengl3.cpp
+  ${SQLITE_DIR}/*.c)
 source_group("Sources" FILES ${SOURCES})
 add_definitions(-DGLFW_INCLUDE_NONE)
 
