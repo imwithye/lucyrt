@@ -2,6 +2,14 @@
 #include "Shader.h"
 
 using lucyrt::graphic::Shader;
+using lucyrt::graphic::ShaderPtr;
+
+ShaderPtr Shader::Compile(const std::string& name, const std::string& vert,
+                          const std::string& frag, const std::string& geom) {
+  return std::shared_ptr<Shader>(new Shader(name, vert, frag, geom), Delete);
+}
+
+void Shader::Delete(Shader* shader) { delete shader; }
 
 Shader::Shader(const std::string& name, const std::string& vert,
                const std::string& frag, const std::string& geom)

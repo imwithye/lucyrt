@@ -9,9 +9,9 @@ void fullscreen(int argc, const char** argv) {
   (void)argc;
   (void)argv;
   App::Initialize(800, 600, "lucyrt");
-  std::shared_ptr<Shader> pp_unlit = std::make_shared<Shader>(
-      "post-processing unlit", Shaders_postprocessing_unlit_vert,
-      Shaders_postprocessing_unlit_frag);
+  ShaderPtr pp_unlit = Shader::Compile("post-processing unlit",
+                                       Shaders_postprocessing_unlit_vert,
+                                       Shaders_postprocessing_unlit_frag);
   FullscreenRef fs = Fullscreen::New("texture");
   fs->Initialize();
   Texture tex("/home/yiwei/lucyrt/examples/tiles.png");

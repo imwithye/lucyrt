@@ -17,13 +17,24 @@
 
 namespace lucyrt {
 namespace graphic {
+class Shader;
+typedef std::shared_ptr<Shader> ShaderPtr;
+
 class Shader {
  public:
-  std::string name;
+  static ShaderPtr Compile(const std::string& name, const std::string& vert,
+                           const std::string& frag,
+                           const std::string& geom = "");
+  static void Delete(Shader* shader);
 
+ private:
   Shader(const std::string& name, const std::string& vert,
          const std::string& frag, const std::string& geom = "");
   ~Shader();
+
+ public:
+  std::string name;
+
   template <typename OStream>
   friend OStream& operator<<(OStream& os, const Shader* s) {
     return os << "Shader[" << s->name << "(id:" << s->id_ << ")]";

@@ -34,7 +34,7 @@ class Mesh {
   std::vector<Vertex> vertices;
   std::vector<GLuint> indices;
   TransformationMatrix transform;
-  std::shared_ptr<Shader> shader;
+  ShaderPtr shader;
 
   explicit Mesh(const std::string& name);
   ~Mesh();

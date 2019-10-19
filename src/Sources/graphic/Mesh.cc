@@ -2,13 +2,13 @@
 #include "Mesh.h"
 
 #include "App.h"
-#include "resource/rs.h"
+#include "resource/rs.h"  //NOLINT
 
 using lucyrt::graphic::Mesh;
 
 Mesh::Mesh(const std::string &name) : name(name), vao_(0), vbo_(0), ebo_(0) {
-  shader = std::make_shared<Shader>("shader", Shaders_blinn_phong_vert,
-                                    Shaders_blinn_phong_frag);
+  shader = Shader::Compile("shader", Shaders_blinn_phong_vert,
+                           Shaders_blinn_phong_frag);
 }
 
 Mesh::~Mesh() {
