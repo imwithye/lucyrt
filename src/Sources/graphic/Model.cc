@@ -194,9 +194,12 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       int number_of_faces = g_reader.ReadInt();
       for (int face_idx = 0; face_idx < number_of_faces; face_idx++) {
         // Read Triangle Vertex Index
-        indices.push_back(g_reader.ReadInt());
-        indices.push_back(g_reader.ReadInt());
-        indices.push_back(g_reader.ReadInt());
+        int idx0 = g_reader.ReadInt();
+        int idx1 = g_reader.ReadInt();
+        int idx2 = g_reader.ReadInt();
+        indices.push_back(idx0);
+        indices.push_back(idx2);
+        indices.push_back(idx1);
       }
     }
 
@@ -209,9 +212,9 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
             nz = g_reader.ReadFloat();
       float ux = g_reader.ReadFloat(), uy = g_reader.ReadFloat();
       Vertex vertex{
-          glm::vec3{px, py, pz},  // pos
-          glm::vec3{nx, ny, nz},  // normal
-          glm::vec2{ux, uy},      // uv
+          glm::vec3{-px, py, pz},  // pos, flip x
+          glm::vec3{-nx, ny, nz},  // normal, flip x
+          glm::vec2{ux, uy},       // uv
       };
       vertices.push_back(vertex);
     }
@@ -222,7 +225,10 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       glm::mat4 matrix;
       for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
-          matrix[row][col] = g_reader.ReadFloat();
+          // flip x
+          matrix[row][col] = (row * col == 0) && (row + col != 0)
+                                 ? -g_reader.ReadFloat()
+                                 : g_reader.ReadFloat();
         }
       }
       matrix = glm::transpose(matrix);
