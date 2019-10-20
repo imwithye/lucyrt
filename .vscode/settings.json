@@ -66,7 +66,8 @@
     "forward_list": "cpp",
     "list": "cpp",
     "unordered_set": "cpp",
-    "codecvt": "cpp"
+    "codecvt": "cpp",
+    "valarray": "cpp"
   },
   "glsllint.glslangValidatorPath": "glslangValidator"
 }

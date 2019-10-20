@@ -42,6 +42,7 @@ static void AssimpProcessMesh(ModelPtr m, aiMesh *aMesh,
                               const aiScene *aScene) {
   const MeshPtr mesh = Mesh::New(aMesh->mName.C_Str());
 
+  std::vector<Vertex> vertices;
   for (unsigned int i = 0; i < aMesh->mNumVertices; i++) {
     Vertex vertex;
     // positions
@@ -57,13 +58,17 @@ static void AssimpProcessMesh(ModelPtr m, aiMesh *aMesh,
       vertex.uv.x = aMesh->mTextureCoords[0][i].x;
       vertex.uv.y = aMesh->mTextureCoords[0][i].y;
     }
-    mesh->vertices.push_back(vertex);
+    vertices.push_back(vertex);
   }
+  mesh->SetVertices(vertices);
+
+  std::vector<GLuint> indices;
   for (size_t i = 0; i < aMesh->mNumFaces; i++) {
     aiFace face = aMesh->mFaces[i];
     for (size_t j = 0; j < face.mNumIndices; j++)
-      mesh->indices.push_back(face.mIndices[j]);
+      indices.push_back(face.mIndices[j]);
   }
+  mesh->SetIndices(indices);
 
   aiMaterial *aMaterial = aScene->mMaterials[aMesh->mMaterialIndex];
   aiColor3D aColor(0.f, 0.f, 0.f);
@@ -234,8 +239,8 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       matrix = glm::transpose(matrix);
 
       MeshPtr mesh = Mesh::New(name);
-      mesh->vertices = vertices;
-      mesh->indices = indices;
+      mesh->SetVertices(vertices);
+      mesh->SetIndices(indices);
       mesh->transform.matrix = matrix;
 
       mesh->shader->diffuse = diffuse;

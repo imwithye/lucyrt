@@ -34,8 +34,7 @@ typedef std::shared_ptr<Mesh> MeshPtr;
 class Mesh {
  public:
   std::string name;
-  std::vector<Vertex> vertices;
-  std::vector<GLuint> indices;
+
   TransformationMatrix transform;
   ShaderPtr shader;
 
@@ -50,16 +49,20 @@ class Mesh {
  public:
   template <typename OStream>
   friend OStream& operator<<(OStream& os, const Mesh* m) {
-    return os << "Mesh[" << m->name << "(v:" << m->vertices.size()
-              << " i:" << m->indices.size() << " vao:" << m->vao_ << ")]";
+    return os << "Mesh[" << m->name << "(v:" << m->vertices_.size()
+              << " i:" << m->indices_.size() << " vao:" << m->vao_ << ")]";
   }
 
+  void SetVertices(const std::vector<Vertex>& vertices);
+  void SetIndices(const std::vector<GLuint>& indices);
   bool PrepareToGPU();
   void RemoveFromGPU();
   void Draw(Context* ctx);
 
  private:
   GLuint vao_, vbo_, ebo_;
+  std::vector<Vertex> vertices_;
+  std::vector<GLuint> indices_;
 };
 }  // namespace graphic
 }  // namespace lucyrt
