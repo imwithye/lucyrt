@@ -272,13 +272,11 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
           // flip x
-          matrix[row][col] = (row * col == 0) && (row + col != 0)
+          matrix[col][row] = (row * col == 0) && (row + col != 0)
                                  ? -g_reader.ReadFloat()
                                  : g_reader.ReadFloat();
         }
       }
-      matrix = glm::transpose(matrix);
-
       MeshPtr mesh = Mesh::New(name);
       mesh->SetVertices(vertices);
       mesh->SetSubmeshCount(number_of_submeshes);
