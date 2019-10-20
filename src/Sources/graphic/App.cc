@@ -16,6 +16,7 @@ bool App::Initialize(GLuint width, GLuint height, const std::string &title) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_SAMPLES, 4);
 
 #ifdef __APPLE__
   glfwWindowHint(
@@ -29,6 +30,7 @@ bool App::Initialize(GLuint width, GLuint height, const std::string &title) {
   glfwSetFramebufferSizeCallback(ctx->window_, framebufferSizeCallback);
   glfwSetCursorPosCallback(ctx->window_, Input::glfwMouseCallback);
   glfwSetInputMode(ctx->window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+  glEnable(GL_MULTISAMPLE);
   app.ctx_ = ctx;
   spdlog::info("App initialized");
   return true;
