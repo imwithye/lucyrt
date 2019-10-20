@@ -67,7 +67,8 @@
     "list": "cpp",
     "unordered_set": "cpp",
     "codecvt": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "*.mm": "cpp"
   },
   "glsllint.glslangValidatorPath": "glslangValidator"
 }

@@ -184,6 +184,33 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       return diffuse;
     }
 
+    TexturePtr ReadTexture(int id) {
+      TexturePtr ptr = nullptr;
+
+      sqlite3_stmt *stmt;
+      std::string query = "select StandardData from MaterialTable where Id = ";
+      query += std::to_string(id);
+      sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, 0);
+      int step = sqlite3_step(stmt);
+      if (step == SQLITE_DONE) {
+        return nullptr;
+      }
+      const unsigned char *data = sqlite3_column_text(stmt, 0);
+      if (data == nullptr) {
+        return nullptr;
+      }
+      nlohmann::json json_data = nlohmann::json::parse(data);
+      nlohmann::json main_tex = json_data["MainTex"];
+      if (main_tex == nullptr) {
+        return nullptr;
+      }
+      std::string texture_name = main_tex["TextureName"];
+      TexturePtr texture =
+          Texture::Load("../examples/sample_revit/assets/" + texture_name);
+      sqlite3_finalize(stmt);
+      return texture;
+    }
+
     ~MaterialReader() {
       if (db) {
         sqlite3_close(db);
@@ -202,10 +229,10 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
     std::vector<std::vector<GLuint>> submeshes;
     for (int s = 0; s < number_of_submeshes; s++) {
       int material_id = g_reader.ReadInt();  // Material ID
-      diffuse = m_reader.ReadDiffuse(material_id);
       ShaderPtr shader = Shader::Compile("shader", Shaders_blinn_phong_vert,
                                          Shaders_blinn_phong_frag);
-      shader->diffuse = diffuse;
+      shader->diffuse = m_reader.ReadDiffuse(material_id);
+      shader->diffuse_texture = m_reader.ReadTexture(material_id);
       shaders.push_back(shader);
 
       std::vector<GLuint> indices;
