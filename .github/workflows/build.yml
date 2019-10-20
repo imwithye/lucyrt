@@ -13,7 +13,7 @@ jobs:
         mkdir build
         cd build
         cmake ..
-        msbuild ALL_BUILD.vcxproj
+        "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" ALL_BUILD.vcxproj
   build-linux:
     name: Build for Linux
     runs-on: ubuntu-latest
