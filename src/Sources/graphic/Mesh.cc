@@ -31,8 +31,10 @@ void Mesh::SetVertices(const std::vector<Vertex> &vertices) {
   vertices_ = vertices;
 }
 
-void Mesh::SetIndices(const std::vector<GLuint> &indices) {
-  indices_ = indices;
+void Mesh::SetSubmeshCount(GLuint count) { indices_.resize(count); }
+
+void Mesh::SetIndices(GLuint idx, const std::vector<GLuint> &indices) {
+  indices_[idx] = indices;
 }
 
 bool Mesh::PrepareToGPU() {
@@ -43,9 +45,16 @@ bool Mesh::PrepareToGPU() {
   glBindBuffer(GL_ARRAY_BUFFER, vbo_);
   glBufferData(GL_ARRAY_BUFFER, vertices_.size() * sizeof(Vertex),
                vertices_.data(), GL_STATIC_DRAW);
+
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof(GLuint),
-               indices_.data(), GL_STATIC_DRAW);
+  std::vector<GLuint> indices;
+  for (size_t i = 0; i < indices_.size(); i++) {
+    const std::vector<GLuint> &submesh = indices_[i];
+    indices.insert(indices.end(), submesh.begin(), submesh.end());
+  }
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint),
+               indices.data(), GL_STATIC_DRAW);
+
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                         reinterpret_cast<void *>(offsetof(Vertex, pos)));
   glEnableVertexAttribArray(0);
@@ -55,6 +64,7 @@ bool Mesh::PrepareToGPU() {
   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                         reinterpret_cast<void *>(offsetof(Vertex, uv)));
   glEnableVertexAttribArray(2);
+
   spdlog::trace("{} loaded to GPU", this, vao_);
   return true;
 }
@@ -75,6 +85,12 @@ void Mesh::Draw(Context *ctx) {
     shader->SetTexture("DiffuseTexture0", GL_TEXTURE0, shader->diffuse_texture);
   shader->Use();
   glBindVertexArray(vao_);
-  glDrawElements(GL_TRIANGLES, (GLsizei)indices_.size(), GL_UNSIGNED_INT, 0);
+  size_t offset = 0;
+  for (size_t i = 0; i < indices_.size(); i++) {
+    const std::vector<GLuint> &indices = indices_[i];
+    glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT,
+                   reinterpret_cast<char *>(NULL) + offset);
+    offset += sizeof(GLuint) * indices.size();
+  }
   glBindTexture(GL_TEXTURE_2D, 0);
 }

@@ -68,7 +68,8 @@ static void AssimpProcessMesh(ModelPtr m, aiMesh *aMesh,
     for (size_t j = 0; j < face.mNumIndices; j++)
       indices.push_back(face.mIndices[j]);
   }
-  mesh->SetIndices(indices);
+  mesh->SetSubmeshCount(1);
+  mesh->SetIndices(0, indices);
 
   aiMaterial *aMaterial = aScene->mMaterials[aMesh->mMaterialIndex];
   aiColor3D aColor(0.f, 0.f, 0.f);
@@ -190,12 +191,13 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
 
     glm::vec4 diffuse(1.0f, 1.0f, 1.0f, 1.0f);
     int number_of_submeshes = g_reader.ReadInt();
-    std::vector<GLuint> indices;
+    std::vector<std::vector<GLuint>> submeshes;
     for (int s = 0; s < number_of_submeshes; s++) {
       int material_id = g_reader.ReadInt();  // Material ID
       if (material_id > 0) {
         diffuse = m_reader.ReadDiffuse(material_id);
       }
+      std::vector<GLuint> indices;
       int number_of_faces = g_reader.ReadInt();
       for (int face_idx = 0; face_idx < number_of_faces; face_idx++) {
         // Read Triangle Vertex Index
@@ -206,6 +208,7 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
         indices.push_back(idx2);
         indices.push_back(idx1);
       }
+      submeshes.push_back(indices);
     }
 
     int number_of_vertices = g_reader.ReadInt();
@@ -240,7 +243,10 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
 
       MeshPtr mesh = Mesh::New(name);
       mesh->SetVertices(vertices);
-      mesh->SetIndices(indices);
+      mesh->SetSubmeshCount(number_of_submeshes);
+      for (int i = 0; i < number_of_submeshes; i++) {
+        mesh->SetIndices(i, submeshes[i]);
+      }
       mesh->transform.matrix = matrix;
 
       mesh->shader->diffuse = diffuse;

@@ -54,7 +54,8 @@ class Mesh {
   }
 
   void SetVertices(const std::vector<Vertex>& vertices);
-  void SetIndices(const std::vector<GLuint>& indices);
+  void SetSubmeshCount(GLuint count);
+  void SetIndices(GLuint idx, const std::vector<GLuint>& indices);
   bool PrepareToGPU();
   void RemoveFromGPU();
   void Draw(Context* ctx);
@@ -62,7 +63,7 @@ class Mesh {
  private:
   GLuint vao_, vbo_, ebo_;
   std::vector<Vertex> vertices_;
-  std::vector<GLuint> indices_;
+  std::vector<std::vector<GLuint>> indices_;
 };
 }  // namespace graphic
 }  // namespace lucyrt
