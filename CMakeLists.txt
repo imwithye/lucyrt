@@ -24,7 +24,11 @@ include_directories(
   vendors/${STB_IMAGE_DIR}/
   src/Sources/)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -fvisibility=hidden -std=c++11")
+if(MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+else()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -fvisibility=hidden -std=c++11")
+endif()
 
 file(GLOB_RECURSE PROJECT_SOURCES src/Sources/*.cc)
 file(GLOB_RECURSE PROJECT_RESOURCES src/Shaders/*.vert

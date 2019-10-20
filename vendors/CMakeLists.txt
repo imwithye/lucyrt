@@ -1,7 +1,10 @@
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -fvisibility=hidden -std=c++11")
-
-if(NOT WIN32)
-  set(GLAD_LIBRARIES dl)
+if(MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w")
+else()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -fvisibility=hidden -std=c++11")
+  if(NOT WIN32)
+    set(GLAD_LIBRARIES dl)
+  endif()
 endif()
 
 option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
