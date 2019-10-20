@@ -16,11 +16,14 @@
 
 #include "Mesh.h"
 #include "Texture.h"
+#include "resource/rs.h"
 
 using lucyrt::graphic::Mesh;
 using lucyrt::graphic::MeshPtr;
 using lucyrt::graphic::Model;
 using lucyrt::graphic::ModelPtr;
+using lucyrt::graphic::Shader;
+using lucyrt::graphic::ShaderPtr;
 using lucyrt::graphic::Texture;
 using lucyrt::graphic::TexturePtr;
 using lucyrt::graphic::Vertex;
@@ -74,12 +77,16 @@ static void AssimpProcessMesh(ModelPtr m, aiMesh *aMesh,
   aiMaterial *aMaterial = aScene->mMaterials[aMesh->mMaterialIndex];
   aiColor3D aColor(0.f, 0.f, 0.f);
   aMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aColor);
-  mesh->shader->diffuse = glm::vec4(aColor.r, aColor.g, aColor.b, 1.0f);
+  std::vector<ShaderPtr> shaders(1);
+  shaders[0] = Shader::Compile("shader", Shaders_blinn_phong_vert,
+                               Shaders_blinn_phong_frag);
+  shaders[0]->diffuse = glm::vec4(aColor.r, aColor.g, aColor.b, 1.0f);
   std::vector<TexturePtr> diffuse_maps = AssimpLoadMaterialTextures(
       aMaterial, aiTextureType_DIFFUSE, "texture_diffuse");
   if (diffuse_maps.size() > 0) {
-    mesh->shader->diffuse_texture = diffuse_maps[0];
+    shaders[0]->diffuse_texture = diffuse_maps[0];
   }
+  mesh->SetShaders(shaders);
   m->meshes.push_back(mesh);
 }
 
@@ -191,12 +198,16 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
 
     glm::vec4 diffuse(1.0f, 1.0f, 1.0f, 1.0f);
     int number_of_submeshes = g_reader.ReadInt();
+    std::vector<ShaderPtr> shaders;
     std::vector<std::vector<GLuint>> submeshes;
     for (int s = 0; s < number_of_submeshes; s++) {
       int material_id = g_reader.ReadInt();  // Material ID
-      if (material_id > 0) {
-        diffuse = m_reader.ReadDiffuse(material_id);
-      }
+      diffuse = m_reader.ReadDiffuse(material_id);
+      ShaderPtr shader = Shader::Compile("shader", Shaders_blinn_phong_vert,
+                                         Shaders_blinn_phong_frag);
+      shader->diffuse = diffuse;
+      shaders.push_back(shader);
+
       std::vector<GLuint> indices;
       int number_of_faces = g_reader.ReadInt();
       for (int face_idx = 0; face_idx < number_of_faces; face_idx++) {
@@ -249,7 +260,7 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       }
       mesh->transform.matrix = matrix;
 
-      mesh->shader->diffuse = diffuse;
+      mesh->SetShaders(shaders);
       ptr->meshes.push_back(mesh);
     }
   }

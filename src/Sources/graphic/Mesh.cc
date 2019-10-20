@@ -17,10 +17,7 @@ MeshPtr Mesh::New(const std::string &name, size_t number_of_vertices,
 
 void Mesh::Delete(Mesh *mesh) { delete mesh; }
 
-Mesh::Mesh(const std::string &name) : name(name), vao_(0), vbo_(0), ebo_(0) {
-  shader = Shader::Compile("shader", Shaders_blinn_phong_vert,
-                           Shaders_blinn_phong_frag);
-}
+Mesh::Mesh(const std::string &name) : name(name), vao_(0), vbo_(0), ebo_(0) {}
 
 Mesh::~Mesh() {
   RemoveFromGPU();
@@ -35,6 +32,10 @@ void Mesh::SetSubmeshCount(GLuint count) { indices_.resize(count); }
 
 void Mesh::SetIndices(GLuint idx, const std::vector<GLuint> &indices) {
   indices_[idx] = indices;
+}
+
+void Mesh::SetShaders(const std::vector<ShaderPtr> &shaders) {
+  shaders_ = shaders;
 }
 
 bool Mesh::PrepareToGPU() {
@@ -78,19 +79,31 @@ void Mesh::RemoveFromGPU() {
 }
 
 void Mesh::Draw(Context *ctx) {
-  ctx->PrepareShader(shader.get());
-  shader->SetMat4("LUCYRT_LOCAL_TO_WORLD", transform.matrix);
-  shader->SetVec4("Diffuse", shader->diffuse);
-  if (shader->diffuse_texture)
-    shader->SetTexture("DiffuseTexture0", GL_TEXTURE0, shader->diffuse_texture);
-  shader->Use();
+  if (shaders_.size() <= 0) {
+    return;
+  }
   glBindVertexArray(vao_);
   size_t offset = 0;
   for (size_t i = 0; i < indices_.size(); i++) {
+    ShaderPtr shader;
+    if (i > shaders_.size()) {
+      shader = shaders_[shaders_.size() - 1];
+    } else {
+      shader = shaders_[i];
+    }
+
+    ctx->PrepareShader(shader.get());
+    shader->SetMat4("LUCYRT_LOCAL_TO_WORLD", transform.matrix);
+    shader->SetVec4("Diffuse", shader->diffuse);
+    if (shader->diffuse_texture)
+      shader->SetTexture("DiffuseTexture0", GL_TEXTURE0,
+                         shader->diffuse_texture);
+    shader->Use();
+
     const std::vector<GLuint> &indices = indices_[i];
     glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT,
                    reinterpret_cast<char *>(NULL) + offset);
     offset += sizeof(GLuint) * indices.size();
+    glBindTexture(GL_TEXTURE_2D, 0);
   }
-  glBindTexture(GL_TEXTURE_2D, 0);
 }

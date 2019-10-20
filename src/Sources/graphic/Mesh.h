@@ -34,9 +34,7 @@ typedef std::shared_ptr<Mesh> MeshPtr;
 class Mesh {
  public:
   std::string name;
-
   TransformationMatrix transform;
-  ShaderPtr shader;
 
   static MeshPtr New(const std::string& name, size_t number_of_vertices = 0,
                      size_t number_of_indices = 0);
@@ -56,6 +54,7 @@ class Mesh {
   void SetVertices(const std::vector<Vertex>& vertices);
   void SetSubmeshCount(GLuint count);
   void SetIndices(GLuint idx, const std::vector<GLuint>& indices);
+  void SetShaders(const std::vector<ShaderPtr>& shaders);
   bool PrepareToGPU();
   void RemoveFromGPU();
   void Draw(Context* ctx);
@@ -64,6 +63,7 @@ class Mesh {
   GLuint vao_, vbo_, ebo_;
   std::vector<Vertex> vertices_;
   std::vector<std::vector<GLuint>> indices_;
+  std::vector<ShaderPtr> shaders_;
 };
 }  // namespace graphic
 }  // namespace lucyrt
