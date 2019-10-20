@@ -7,6 +7,8 @@ using lucyrt::graphic::TransformationMatrix;
 
 TransformationMatrix::TransformationMatrix() : matrix(1.0) {}
 
+TransformationMatrix::TransformationMatrix(glm::mat4 matrix) : matrix(matrix) {}
+
 vec3 TransformationMatrix::GetPos() const {
   return vec3(matrix[0][3], matrix[1][3], matrix[2][3]);
 }

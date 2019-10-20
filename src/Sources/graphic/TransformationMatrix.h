@@ -12,6 +12,7 @@ class TransformationMatrix {
   glm::mat4 matrix;
 
   TransformationMatrix();
+  explicit TransformationMatrix(glm::mat4 matrix);
   glm::vec3 GetPos() const;
   void SetPos(glm::vec3 pos);
   glm::vec3 GetUp() const;

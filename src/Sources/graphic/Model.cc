@@ -285,7 +285,7 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       for (int i = 0; i < number_of_submeshes; i++) {
         mesh->SetIndices(i, submeshes[i]);
       }
-      mesh->transform.matrix = matrix;
+      mesh->transform = TransformationMatrix(matrix);
 
       mesh->SetShaders(shaders);
       ptr->meshes.push_back(mesh);
