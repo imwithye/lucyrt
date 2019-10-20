@@ -16,6 +16,7 @@
 
 #include "Mesh.h"
 #include "Texture.h"
+#include "TransformationMatrix.h"
 #include "resource/rs.h"
 
 using lucyrt::graphic::Mesh;
@@ -26,6 +27,7 @@ using lucyrt::graphic::Shader;
 using lucyrt::graphic::ShaderPtr;
 using lucyrt::graphic::Texture;
 using lucyrt::graphic::TexturePtr;
+using lucyrt::graphic::TransformationMatrix;
 using lucyrt::graphic::Vertex;
 
 static std::vector<TexturePtr> AssimpLoadMaterialTextures(
@@ -87,6 +89,9 @@ static void AssimpProcessMesh(ModelPtr m, aiMesh *aMesh,
     shaders[0]->diffuse_texture = diffuse_maps[0];
   }
   mesh->SetShaders(shaders);
+  TransformationMatrix mat;
+  mesh->transforms.push_back(mat);
+
   m->meshes.push_back(mesh);
 }
 
@@ -265,6 +270,13 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       vertices.push_back(vertex);
     }
 
+    MeshPtr mesh = Mesh::New(name);
+    mesh->SetVertices(vertices);
+    mesh->SetSubmeshCount(number_of_submeshes);
+    for (int i = 0; i < number_of_submeshes; i++) {
+      mesh->SetIndices(i, submeshes[i]);
+    }
+    mesh->SetShaders(shaders);
     int number_of_instances = g_reader.ReadInt();
     for (int i = 0; i < number_of_instances; i++) {
       g_reader.ReadInt();  // Element ID
@@ -277,15 +289,10 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
                                  : g_reader.ReadFloat();
         }
       }
-      MeshPtr mesh = Mesh::New(name);
-      mesh->SetVertices(vertices);
-      mesh->SetSubmeshCount(number_of_submeshes);
-      for (int i = 0; i < number_of_submeshes; i++) {
-        mesh->SetIndices(i, submeshes[i]);
-      }
-      mesh->transform = TransformationMatrix(matrix);
-
-      mesh->SetShaders(shaders);
+      TransformationMatrix mat(matrix);
+      mesh->transforms.push_back(mat);
+    }
+    if (mesh->transforms.size() > 0) {
       ptr->meshes.push_back(mesh);
     }
   }

@@ -34,7 +34,7 @@ typedef std::shared_ptr<Mesh> MeshPtr;
 class Mesh {
  public:
   std::string name;
-  TransformationMatrix transform;
+  std::vector<TransformationMatrix> transforms;
 
   static MeshPtr New(const std::string& name, size_t number_of_vertices = 0,
                      size_t number_of_indices = 0);
