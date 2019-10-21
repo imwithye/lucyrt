@@ -41,8 +41,8 @@ class Texture {
 
  public:
   template <typename OStream>
-  friend OStream& operator<<(OStream& os, const Texture* t) {
-    return os << "Texture[" << t->name << "(id:" << t->id_ << ")]";
+  friend OStream& operator<<(OStream& os, const Texture& t) {
+    return os << "Texture[" << t.name << "(id:" << t.id_ << ")]";
   }
 
   void Active(GLenum uint);

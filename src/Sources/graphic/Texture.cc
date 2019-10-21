@@ -73,10 +73,10 @@ Texture::Texture(const std::string& name, const TextureData& data)
                GL_UNSIGNED_BYTE,
                reinterpret_cast<const void*>(data.data_.data()));
   glGenerateMipmap(GL_TEXTURE_2D);
-  spdlog::trace("{} initialized", this);
+  spdlog::trace("{} initialized", *this);
 }
 
 Texture::~Texture() {
   glDeleteTextures(1, &id_);
-  spdlog::trace("{} deleted", this);
+  spdlog::trace("{} deleted", *this);
 }

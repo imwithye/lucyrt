@@ -25,7 +25,7 @@ Mesh::Mesh(const std::string &name) : name(name), vao_(0), vbo_(0), ebo_(0) {}
 
 Mesh::~Mesh() {
   RemoveFromGPU();
-  spdlog::trace("{} deleted", this);
+  spdlog::trace("{} deleted", *this);
 }
 
 void Mesh::SetVertices(const std::vector<Vertex> &vertices) {
@@ -70,7 +70,7 @@ bool Mesh::PrepareToGPU() {
                         reinterpret_cast<void *>(offsetof(Vertex, uv)));
   glEnableVertexAttribArray(2);
 
-  spdlog::trace("{} loaded to GPU", this, vao_);
+  spdlog::trace("{} loaded to GPU", *this, vao_);
   return true;
 }
 
@@ -79,7 +79,7 @@ void Mesh::RemoveFromGPU() {
   glDeleteBuffers(1, &vbo_);
   glDeleteVertexArrays(1, &vao_);
   vao_ = vbo_ = ebo_ = 0;
-  spdlog::trace("{} removed from GPU", this);
+  spdlog::trace("{} removed from GPU", *this);
 }
 
 void Mesh::Draw(Context *ctx) {

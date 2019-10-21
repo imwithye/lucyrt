@@ -44,9 +44,9 @@ class Mesh {
 
  public:
   template <typename OStream>
-  friend OStream& operator<<(OStream& os, const Mesh* m) {
-    return os << "Mesh[" << m->name << "(v:" << m->vertices_.size()
-              << " i:" << m->indices_.size() << " vao:" << m->vao_ << ")]";
+  friend OStream& operator<<(OStream& os, const Mesh& m) {
+    return os << "Mesh[" << m.name << "(v:" << m.vertices_.size()
+              << " i:" << m.indices_.size() << " vao:" << m.vao_ << ")]";
   }
 
   void SetVertices(const std::vector<Vertex>& vertices);

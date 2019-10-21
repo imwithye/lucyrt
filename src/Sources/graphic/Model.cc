@@ -116,11 +116,11 @@ ModelPtr Model::LoadWithAssimp(const std::string &name,
                                       aiProcess_CalcTangentSpace);
   if (!aScene || aScene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
       !aScene->mRootNode) {
-    spdlog::error("{} load from {} failed", ptr.get(), filepath);
+    spdlog::error("{} load from {} failed", *ptr, filepath);
     return ptr;
   }
   AssimpProcessNode(ptr, aScene->mRootNode, aScene);
-  spdlog::info("{} loaded from {}", ptr.get(), filepath);
+  spdlog::info("{} loaded from {}", *ptr, filepath);
   return ptr;
 }
 
@@ -311,7 +311,7 @@ bool Model::PrepareToGPU() {
   for (const MeshPtr mesh : meshes) {
     mesh->PrepareToGPU();
   }
-  spdlog::trace("{} loaded to GPU", this);
+  spdlog::trace("{} loaded to GPU", *this);
   return true;
 }
 
@@ -319,7 +319,7 @@ void Model::RemoveFromGPU() {
   for (const std::shared_ptr<Mesh> mesh : meshes) {
     mesh->RemoveFromGPU();
   }
-  spdlog::trace("{} removed from GPU", this);
+  spdlog::trace("{} removed from GPU", *this);
 }
 
 void Model::Draw(Context *ctx) {

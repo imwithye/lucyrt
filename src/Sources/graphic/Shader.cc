@@ -28,7 +28,7 @@ Shader::Shader(const std::string& name, const std::string& vert,
     if (!success) {
       char infoLog[512];
       glGetShaderInfoLog(vert_shader_id, 512, NULL, infoLog);
-      spdlog::error("{} vertex shader compilation faild\n{}", this, infoLog);
+      spdlog::error("{} vertex shader compilation faild\n{}", *this, infoLog);
       glDeleteShader(vert_shader_id);
       glDeleteProgram(program_id);
       return;
@@ -45,7 +45,7 @@ Shader::Shader(const std::string& name, const std::string& vert,
     if (!success) {
       char infoLog[512];
       glGetShaderInfoLog(frag_shader_id, 512, NULL, infoLog);
-      spdlog::error("{} fragment shader compilation faild\n{}", this, infoLog);
+      spdlog::error("{} fragment shader compilation faild\n{}", *this, infoLog);
       glDeleteShader(frag_shader_id);
       glDeleteProgram(program_id);
       return;
@@ -62,7 +62,7 @@ Shader::Shader(const std::string& name, const std::string& vert,
     if (!success) {
       char infoLog[512];
       glGetShaderInfoLog(geom_shader_id, 512, NULL, infoLog);
-      spdlog::error("{} geometry shader compilation faild\n{}", this, infoLog);
+      spdlog::error("{} geometry shader compilation faild\n{}", *this, infoLog);
       glDeleteShader(geom_shader_id);
       glDeleteProgram(program_id);
       return;
@@ -75,7 +75,7 @@ Shader::Shader(const std::string& name, const std::string& vert,
   if (!success) {
     char infoLog[512];
     glGetProgramInfoLog(program_id, 512, NULL, infoLog);
-    spdlog::error("{} linking faild\n{}", this, infoLog);
+    spdlog::error("{} linking faild\n{}", *this, infoLog);
     glDeleteProgram(program_id);
     return;
   }
@@ -84,12 +84,12 @@ Shader::Shader(const std::string& name, const std::string& vert,
   glDeleteShader(frag_shader_id);
   glDeleteShader(geom_shader_id);
   id_ = program_id;
-  spdlog::trace("{} initialized", this);
+  spdlog::trace("{} initialized", *this);
 }
 
 Shader::~Shader() {
   glDeleteProgram(id_);
-  spdlog::trace("{} deleted", this);
+  spdlog::trace("{} deleted", *this);
 }
 
 void Shader::Use() { glUseProgram(id_); }

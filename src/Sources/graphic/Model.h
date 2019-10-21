@@ -29,8 +29,8 @@ class Model {
 
  public:
   template <typename OStream>
-  friend OStream& operator<<(OStream& os, const Model* m) {
-    return os << "Model[" << m->name << "(meshes:" << m->meshes.size() << ")]";
+  friend OStream& operator<<(OStream& os, const Model& m) {
+    return os << "Model[" << m.name << "(meshes:" << m.meshes.size() << ")]";
   }
 
   bool PrepareToGPU();
