@@ -33,9 +33,8 @@ endif()
 
 file(GLOB_RECURSE PROJECT_SOURCES src/Sources/*.cc)
 file(GLOB_RECURSE PROJECT_RESOURCES src/Shaders/*.vert
-  src/Shaders/*.frag
-  src/Shaders/*.geom
-  src/Shaders/*.comp)
+  src/Shaders/*.frag src/Shaders/*.geom src/Shaders/*.comp
+  src/Textures/*.png src/Textures/*.jpg src/Textures/*.tga)
 source_group("Sources" FILES ${PROJECT_SOURCES})
 source_group("Resources" FILES ${PROJECT_RESOURCES})
 

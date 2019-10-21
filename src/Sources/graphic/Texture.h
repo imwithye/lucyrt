@@ -17,6 +17,7 @@ class TextureData {
  public:
   TextureData();
   explicit TextureData(const std::string& filepath);
+  TextureData(const unsigned char* raw_data, int len);
   TextureData(const TextureData& t);
 
  private:
@@ -31,7 +32,8 @@ class Texture {
  public:
   std::string name;
 
-  static TexturePtr Load(const std::string& filepath);
+  static TexturePtr LoadFromFile(const std::string& filepath);
+  static TexturePtr LoadFromInternal(const unsigned char* raw_data, int len);
   static void Delete(Texture* texture);
 
  private:

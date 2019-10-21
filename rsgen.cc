@@ -32,7 +32,7 @@ int main(int argc, const char **argv) {
     replace_all(&filesym, "/", "_");
     replace_all(&filesym, "\\", "_");
     FILE *in = fopen(filepath.c_str(), "r");
-    fprintf(out, "const char %s[] = {\n", filesym.c_str());
+    fprintf(out, "const unsigned char %s[] = {\n", filesym.c_str());
     unsigned char buf[256];
     size_t nread = 0;
     size_t linecount = 0;

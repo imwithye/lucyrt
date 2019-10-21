@@ -9,11 +9,13 @@ void fullscreen(int argc, const char** argv) {
   (void)argc;
   (void)argv;
   App::Initialize(800, 600, "lucyrt");
-  ShaderPtr pp_unlit = Shader::Compile("post-processing unlit",
-                                       Shaders_postprocessing_unlit_vert,
-                                       Shaders_postprocessing_unlit_frag);
+  ShaderPtr pp_unlit = Shader::Compile(
+      "post-processing unlit",
+      reinterpret_cast<const char*>(Shaders_postprocessing_unlit_vert),
+      reinterpret_cast<const char*>(Shaders_postprocessing_unlit_frag));
   FullscreenPtr fs = Fullscreen::New("texture");
-  TexturePtr tex = Texture::Load("/home/yiwei/lucyrt/examples/tiles.png");
+  TexturePtr tex =
+      Texture::LoadFromFile("/home/yiwei/lucyrt/examples/tiles.png");
   App::Run([&](Context*) {
     pp_unlit->SetTexture("tex", GL_TEXTURE0, tex);
     fs->Draw(pp_unlit.get());

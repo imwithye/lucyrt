@@ -42,7 +42,7 @@ static std::vector<TexturePtr> AssimpLoadMaterialTextures(
     mat->GetTexture(type, i, &str);
     std::string filepath(str.C_Str());
     filepath = (dirpath / filepath).string();
-    TexturePtr tex = Texture::Load(filepath);
+    TexturePtr tex = Texture::LoadFromFile(filepath);
     textures.push_back(tex);
   }
   return textures;
@@ -85,8 +85,9 @@ static void AssimpProcessMesh(ModelPtr m, aiMesh *aMesh, const aiScene *aScene,
   aiColor3D aColor(0.f, 0.f, 0.f);
   aMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aColor);
   std::vector<ShaderPtr> shaders(1);
-  shaders[0] = Shader::Compile("shader", Shaders_blinn_phong_vert,
-                               Shaders_blinn_phong_frag);
+  shaders[0] = Shader::Compile(
+      "shader", reinterpret_cast<const char *>(Shaders_blinn_phong_vert),
+      reinterpret_cast<const char *>(Shaders_blinn_phong_frag));
   shaders[0]->diffuse = glm::vec4(aColor.r, aColor.g, aColor.b, 1.0f);
   std::vector<TexturePtr> diffuse_maps =
       AssimpLoadMaterialTextures(aMaterial, aiTextureType_DIFFUSE, directory);
@@ -229,7 +230,8 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
         return nullptr;
       }
       std::string texture_name = main_tex["TextureName"];
-      TexturePtr texture = Texture::Load(dirpath / "assets" / texture_name);
+      TexturePtr texture =
+          Texture::LoadFromFile(dirpath / "assets" / texture_name);
       sqlite3_finalize(stmt);
       return texture;
     }
@@ -251,8 +253,9 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
     std::vector<std::vector<GLuint>> submeshes;
     for (int s = 0; s < number_of_submeshes; s++) {
       int material_id = g_reader.ReadInt();  // Material ID
-      ShaderPtr shader = Shader::Compile("shader", Shaders_blinn_phong_vert,
-                                         Shaders_blinn_phong_frag);
+      ShaderPtr shader = Shader::Compile(
+          "shader", reinterpret_cast<const char *>(Shaders_blinn_phong_vert),
+          reinterpret_cast<const char *>(Shaders_blinn_phong_frag));
       shader->diffuse = m_reader.ReadDiffuse(material_id);
       shader->diffuse_texture = m_reader.ReadTexture(material_id);
       shaders.push_back(shader);
