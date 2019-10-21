@@ -1,12 +1,11 @@
 // Copyright 2019
 #pragma once
 
-#include <spdlog/fmt/ostr.h>
-
 #include <memory>
 #include <string>
 #include <vector>
 
+#include "GL.h"
 #include "Mesh.h"
 
 namespace lucyrt {

@@ -1,8 +1,6 @@
 // Copyright 2019
 #pragma once
 
-#include <spdlog/fmt/ostr.h>
-
 #include <memory>
 #include <string>
 #include <unordered_map>

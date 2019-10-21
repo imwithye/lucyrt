@@ -11,3 +11,5 @@
 #include <imgui_impl_opengl3.h>
 
 #include <spdlog/spdlog.h>
+
+#include <spdlog/fmt/ostr.h>
