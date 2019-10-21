@@ -3,21 +3,17 @@
 
 using glm::vec3;
 using lucyrt::graphic::Fullscreen;
-using lucyrt::graphic::FullscreenRef;
+using lucyrt::graphic::FullscreenPtr;
 using lucyrt::graphic::Shader;
 
-FullscreenRef Fullscreen::New(const std::string &name) {
-  FullscreenRef ref(new Fullscreen(name));
-  return ref;
+FullscreenPtr Fullscreen::New(const std::string &name) {
+  FullscreenPtr ptr = std::shared_ptr<Fullscreen>(new Fullscreen(name), Delete);
+  return ptr;
 }
 
-void Fullscreen::Draw(Shader *program) {
-  program->Use();
-  glBindVertexArray(vao_);
-  glDrawArrays(GL_TRIANGLES, 0, 6);
-}
+void Fullscreen::Delete(Fullscreen *fullscreen) { delete fullscreen; }
 
-bool Fullscreen::Initialize() {
+Fullscreen::Fullscreen(const std::string &name) : name_(name) {
   float vertices[] = {-1.0f, 1.0f,  0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
                       1.0f,  -1.0f, 1.0f, 0.0f, -1.0f, 1.0f,  0.0f, 1.0f,
                       1.0f,  -1.0f, 1.0f, 0.0f, 1.0f,  1.0f,  1.0f, 1.0f};
@@ -33,15 +29,16 @@ bool Fullscreen::Initialize() {
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
                         reinterpret_cast<void *>(2 * sizeof(float)));
   spdlog::trace("Fullscreen '{}' initialized", name_);
-  return true;
 }
 
-void Fullscreen::Delete() {
+Fullscreen::~Fullscreen() {
   glDeleteBuffers(1, &vbo_);
   glDeleteVertexArrays(1, &vao_);
   spdlog::trace("Fullscreen '{}' deleted", name_);
 }
 
-Fullscreen::~Fullscreen() { Delete(); }
-
-Fullscreen::Fullscreen(const std::string &name) : name_(name) {}
+void Fullscreen::Draw(Shader *program) {
+  program->Use();
+  glBindVertexArray(vao_);
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+}
