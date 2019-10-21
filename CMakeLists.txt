@@ -52,4 +52,4 @@ add_custom_target(rsgen-gen
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 add_dependencies(${PROJECT_NAME} rsgen-gen)
-target_link_libraries(${PROJECT_NAME} vendors)
+target_link_libraries(${PROJECT_NAME} vendors stdc++fs)
