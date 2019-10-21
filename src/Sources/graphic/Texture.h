@@ -34,11 +34,23 @@ class Texture {
 
   static TexturePtr LoadFromFile(const std::string& filepath);
   static TexturePtr LoadFromInternal(const unsigned char* raw_data, int len);
+  static TexturePtr LoadCubemapFromInternal(
+      const unsigned char* right, int right_len,    // right
+      const unsigned char* left, int left_len,      // left
+      const unsigned char* top, int top_len,        // top
+      const unsigned char* bottom, int bottom_len,  // bottom
+      const unsigned char* front, int front_len,    // front
+      const unsigned char* back, int back_len       // back
+  );
   static void Delete(Texture* texture);
 
  private:
   static std::unordered_map<std::string, TextureData> library_;
   Texture(const std::string& name, const TextureData& data);
+  Texture(const std::string& name, const TextureData& right,
+          const TextureData& left, const TextureData& top,
+          const TextureData& bottom, const TextureData& front,
+          const TextureData& back);
   ~Texture();
 
  public:

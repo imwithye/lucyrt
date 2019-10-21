@@ -3,6 +3,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>  //NOLINT
+#include <filesystem>
 #include <iostream>
 
 using lucyrt::graphic::Texture;
@@ -65,18 +66,36 @@ TextureData::TextureData(const TextureData& t)
 std::unordered_map<std::string, TextureData> Texture::library_;
 
 TexturePtr Texture::LoadFromFile(const std::string& filepath) {
+  std::string filename = std::filesystem::path(filepath).filename().string();
   if (library_.find(filepath) == library_.end()) {
     library_[filepath] = TextureData(filepath);
-    TexturePtr ptr(new Texture(filepath, library_[filepath]), Delete);
+    TexturePtr ptr(new Texture(filename, library_[filepath]), Delete);
     return ptr;
   } else {
-    TexturePtr ptr(new Texture(filepath, library_[filepath]), Delete);
+    TexturePtr ptr(new Texture(filename, library_[filepath]), Delete);
     return ptr;
   }
 }
 
 TexturePtr Texture::LoadFromInternal(const unsigned char* raw_data, int len) {
   TexturePtr ptr(new Texture(":memory:", TextureData(raw_data, len)), Delete);
+  return ptr;
+}
+
+TexturePtr Texture::LoadCubemapFromInternal(
+    const unsigned char* right, int right_len,    // right
+    const unsigned char* left, int left_len,      // left
+    const unsigned char* top, int top_len,        // top
+    const unsigned char* bottom, int bottom_len,  // bottom
+    const unsigned char* front, int front_len,    // front
+    const unsigned char* back, int back_len       // back
+) {
+  TexturePtr ptr(
+      new Texture(":memory:", TextureData(right, right_len),
+                  TextureData(left, left_len), TextureData(top, top_len),
+                  TextureData(bottom, bottom_len),
+                  TextureData(front, front_len), TextureData(back, back_len)),
+      Delete);
   return ptr;
 }
 
@@ -91,17 +110,49 @@ Texture::Texture(const std::string& name, const TextureData& data)
     : name(name) {
   glGenTextures(1, &id_);
   glBindTexture(GL_TEXTURE_2D, id_);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                   GL_LINEAR_MIPMAP_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
                   GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.width_, data.height_, 0, GL_RGBA,
                GL_UNSIGNED_BYTE,
                reinterpret_cast<const void*>(data.data_.data()));
   glGenerateMipmap(GL_TEXTURE_2D);
   spdlog::trace("{} initialized", *this);
+}
+
+Texture::Texture(const std::string& name, const TextureData& right,
+                 const TextureData& left, const TextureData& top,
+                 const TextureData& bottom, const TextureData& front,
+                 const TextureData& back)
+    : name(name) {
+  glGenTextures(1, &id_);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, id_);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGB, right.width_,
+               right.height_, 0, GL_RGB, GL_UNSIGNED_BYTE,
+               reinterpret_cast<const void*>(right.data_.data()));
+  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGB, left.width_,
+               left.height_, 0, GL_RGB, GL_UNSIGNED_BYTE,
+               reinterpret_cast<const void*>(left.data_.data()));
+  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGB, top.width_,
+               top.height_, 0, GL_RGB, GL_UNSIGNED_BYTE,
+               reinterpret_cast<const void*>(top.data_.data()));
+  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGB, bottom.width_,
+               bottom.height_, 0, GL_RGB, GL_UNSIGNED_BYTE,
+               reinterpret_cast<const void*>(bottom.data_.data()));
+  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGB, front.width_,
+               front.height_, 0, GL_RGB, GL_UNSIGNED_BYTE,
+               reinterpret_cast<const void*>(front.data_.data()));
+  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGB, back.width_,
+               back.height_, 0, GL_RGB, GL_UNSIGNED_BYTE,
+               reinterpret_cast<const void*>(back.data_.data()));
 }
 
 Texture::~Texture() {
