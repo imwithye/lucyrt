@@ -136,15 +136,20 @@ ModelPtr Model::LoadWithAssimp(const std::string &name,
 }
 
 ModelPtr Model::LoadWithVRcollab(const std::string &name,
-                                 const std::string &dirpath) {
-  (void)dirpath;
+                                 const std::string &directory) {
   ModelPtr ptr = std::shared_ptr<Model>(new Model(name), Delete);
+
+  std::filesystem::path dirpath(directory);
+  dirpath = std::filesystem::canonical(dirpath);
+  spdlog::info("{} starts loading, directory: {}", *ptr, dirpath.string());
 
   class GeometryReader {
    public:
+    std::filesystem::path dirpath;
     std::ifstream handle;
-    explicit GeometryReader(const std::string &path)
-        : handle(path, std::ifstream::binary) {}
+    explicit GeometryReader(const std::filesystem::path &dirpath)
+        : dirpath(dirpath),
+          handle(dirpath / "geometry.vrc", std::ifstream::binary) {}
     int ReadInt() {
       int out;
       handle.read(reinterpret_cast<char *>(&out), sizeof(out));
@@ -169,14 +174,16 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       }
     }
   };
-  GeometryReader g_reader("../examples/sample_revit/geometry.vrc");
+  GeometryReader g_reader(dirpath);
 
   class MaterialReader {
    public:
+    std::filesystem::path dirpath;
     sqlite3 *db = nullptr;
 
-    explicit MaterialReader(const std::string &path) : db(nullptr) {
-      sqlite3_open(path.c_str(), &db);
+    explicit MaterialReader(const std::filesystem::path &dirpath)
+        : dirpath(dirpath), db(nullptr) {
+      sqlite3_open((dirpath / "data.vrc").c_str(), &db);
     }
 
     glm::vec4 ReadDiffuse(int id) {
@@ -222,8 +229,7 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
         return nullptr;
       }
       std::string texture_name = main_tex["TextureName"];
-      TexturePtr texture =
-          Texture::Load("../examples/sample_revit/assets/" + texture_name);
+      TexturePtr texture = Texture::Load(dirpath / "assets" / texture_name);
       sqlite3_finalize(stmt);
       return texture;
     }
@@ -234,7 +240,7 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       }
     }
   };
-  MaterialReader m_reader("../examples/sample_revit/data.vrc");
+  MaterialReader m_reader(dirpath);
 
   int number_of_meshes = g_reader.ReadInt();
   for (int m = 0; m < number_of_meshes; m++) {
