@@ -1,5 +1,5 @@
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W0")
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w -fvisibility=hidden -std=c++11")
   if(NOT WIN32)
