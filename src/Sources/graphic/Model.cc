@@ -19,6 +19,7 @@
 #include "TransformationMatrix.h"
 #include "resource/rs.h"
 
+using lucyrt::graphic::Context;
 using lucyrt::graphic::Mesh;
 using lucyrt::graphic::MeshPtr;
 using lucyrt::graphic::Model;

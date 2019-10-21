@@ -4,8 +4,12 @@
 #include "App.h"
 #include "resource/rs.h"  //NOLINT
 
+using lucyrt::graphic::Context;
 using lucyrt::graphic::Mesh;
 using lucyrt::graphic::MeshPtr;
+using lucyrt::graphic::Shader;
+using lucyrt::graphic::ShaderPtr;
+using lucyrt::graphic::Vertex;
 
 MeshPtr Mesh::New(const std::string &name, size_t number_of_vertices,
                   size_t number_of_indices) {

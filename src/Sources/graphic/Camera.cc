@@ -11,8 +11,8 @@ Camera::Camera() { Reset(); }
 
 mat4 Camera::GetWorldToCamera() const {
   vec3 pos = transform.GetPos();
-  mat4 projection = glm::perspective(glm::radians(fov),
-                                     App::GetContext()->GetAspect(), near, far);
+  mat4 projection = glm::perspective(
+      glm::radians(fov), App::GetContext()->GetAspect(), near_plane, far_plane);
   mat4 view = lookAt(pos, pos + transform.GetForward(), transform.GetUp());
   return projection * view;
 }
@@ -20,8 +20,8 @@ mat4 Camera::GetWorldToCamera() const {
 void Camera::Reset() {
   transform = lucyrt::graphic::TransformationMatrix();
   transform.SetPos(vec3(0, 0, 5));
-  near = 0.01f;
-  far = 1000.0f;
+  near_plane = 0.01f;
+  far_plane = 1000.0f;
   fov = 60;
   speed = 1;
 

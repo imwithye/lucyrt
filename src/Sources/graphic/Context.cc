@@ -4,6 +4,7 @@
 #include "GL.h"
 
 using lucyrt::graphic::Context;
+using lucyrt::graphic::Shader;
 
 Context::~Context() { Delete(); }
 

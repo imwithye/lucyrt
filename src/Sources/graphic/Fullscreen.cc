@@ -4,6 +4,7 @@
 using glm::vec3;
 using lucyrt::graphic::Fullscreen;
 using lucyrt::graphic::FullscreenRef;
+using lucyrt::graphic::Shader;
 
 FullscreenRef Fullscreen::New(const std::string &name) {
   FullscreenRef ref(new Fullscreen(name));

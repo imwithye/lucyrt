@@ -13,8 +13,8 @@ namespace graphic {
 class Camera {
  public:
   TransformationMatrix transform;
-  GLfloat near;
-  GLfloat far;
+  GLfloat near_plane;
+  GLfloat far_plane;
   GLfloat fov;
   GLfloat speed;
 

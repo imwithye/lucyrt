@@ -3,6 +3,8 @@
 
 using lucyrt::graphic::Shader;
 using lucyrt::graphic::ShaderPtr;
+using lucyrt::graphic::Texture;
+using lucyrt::graphic::TexturePtr;
 
 ShaderPtr Shader::Compile(const std::string& name, const std::string& vert,
                           const std::string& frag, const std::string& geom) {
