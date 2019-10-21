@@ -30,6 +30,8 @@ void model(int argc, const char** argv) {
   ModelPtr model = Model::LoadWithVRcollab("model", argv[1]);
   model->PrepareToGPU();
   App::Run([&](Context* ctx) {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
     glEnable(GL_CULL_FACE);

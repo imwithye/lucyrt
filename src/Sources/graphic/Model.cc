@@ -201,7 +201,7 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
           float r = json_data["ConceptualColor"]["r"];
           float g = json_data["ConceptualColor"]["g"];
           float b = json_data["ConceptualColor"]["b"];
-          float a = json_data["ConceptualColor"]["a"];
+          float a = json_data["Opacity"];
           diffuse = glm::vec4(r, g, b, a);
         }
       }
