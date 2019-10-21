@@ -6,7 +6,6 @@
 #include <string>
 
 #include "Camera.h"
-#include "Component.h"
 #include "GL.h"
 #include "Shader.h"
 
@@ -15,7 +14,7 @@ namespace graphic {
 class Context;
 typedef std::shared_ptr<Context> ContextRef;
 
-class Context : public Component {
+class Context {
  public:
   inline GLuint GetWidth() const { return width_; }
   inline GLuint GetHeight() const { return height_; }
@@ -27,7 +26,7 @@ class Context : public Component {
   inline Camera &GetCamera() { return camera_; }
   void PrepareShader(Shader *shader);
   bool ShouldClose() const;
-  virtual ~Context();
+  ~Context();
 
  protected:
   GLuint width_;
@@ -40,8 +39,8 @@ class Context : public Component {
   bool uiEnabled_;
 
   Context(GLuint width, GLuint height, const std::string &title);
-  virtual bool Initialize();
-  virtual void Delete();
+  bool Initialize();
+  void Delete();
   void Loop(std::function<void(Context *)> loop);
 
   friend class App;

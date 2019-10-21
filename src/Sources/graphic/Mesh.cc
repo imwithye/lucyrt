@@ -107,7 +107,7 @@ void Mesh::Draw(Context *ctx) {
 
       const std::vector<GLuint> &indices = indices_[i];
       glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT,
-                     reinterpret_cast<char *>(NULL) + offset);
+                     reinterpret_cast<char *>(offset));
       offset += sizeof(GLuint) * indices.size();
       glBindTexture(GL_TEXTURE_2D, 0);
     }

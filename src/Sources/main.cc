@@ -12,8 +12,7 @@ void fullscreen(int argc, const char** argv) {
   ShaderPtr pp_unlit = Shader::Compile("post-processing unlit",
                                        Shaders_postprocessing_unlit_vert,
                                        Shaders_postprocessing_unlit_frag);
-  FullscreenRef fs = Fullscreen::New("texture");
-  fs->Initialize();
+  FullscreenPtr fs = Fullscreen::New("texture");
   TexturePtr tex = Texture::Load("/home/yiwei/lucyrt/examples/tiles.png");
   App::Run([&](Context*) {
     pp_unlit->SetTexture("tex", GL_TEXTURE0, tex);

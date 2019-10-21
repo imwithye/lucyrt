@@ -6,31 +6,27 @@
 
 #include <glm/vec3.hpp>
 
-#include "Component.h"
 #include "GL.h"
 #include "Shader.h"
 
 namespace lucyrt {
 namespace graphic {
 class Fullscreen;
-typedef std::shared_ptr<Fullscreen> FullscreenRef;
+typedef std::shared_ptr<Fullscreen> FullscreenPtr;
 
-class Fullscreen : public Component {
+class Fullscreen {
  public:
-  static FullscreenRef New(const std::string &name);
+  static FullscreenPtr New(const std::string &name);
+  static void Delete(Fullscreen *fullscreen);
 
-  void Draw();
-
-  bool Initialize();
-  void Delete();
   void Draw(Shader *program);
-  ~Fullscreen();
 
  private:
   std::string name_;
   GLuint vao_, vbo_;
 
   explicit Fullscreen(const std::string &name);
+  ~Fullscreen();
 };
 }  // namespace graphic
 }  // namespace lucyrt
