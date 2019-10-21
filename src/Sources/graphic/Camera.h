@@ -25,10 +25,10 @@ class Camera {
   void OnGUI();
 
  private:
-  GLdouble lastX;
-  GLdouble lastY;
-  GLdouble yaw;
-  GLdouble pitch;
+  GLfloat lastX;
+  GLfloat lastY;
+  GLfloat yaw;
+  GLfloat pitch;
 
   void wasd();
   void mouse();

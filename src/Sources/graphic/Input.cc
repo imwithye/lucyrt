@@ -22,6 +22,6 @@ int Input::GetMouseButton(int button) {
 void Input::glfwMouseCallback(GLFWwindow *window, GLdouble xpos,
                               GLdouble ypos) {
   (void)window;  // unused;
-  mouseX = xpos;
-  mouseY = ypos;
+  mouseX = static_cast<GLfloat>(xpos);
+  mouseY = static_cast<GLfloat>(ypos);
 }
