@@ -133,7 +133,7 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
    public:
     std::ifstream handle;
     explicit GeometryReader(const std::string &path)
-        : handle(path, std::ifstream::in) {}
+        : handle(path, std::ifstream::binary) {}
     int ReadInt() {
       int out;
       handle.read(reinterpret_cast<char *>(&out), sizeof(out));
