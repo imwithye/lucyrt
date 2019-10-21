@@ -6,6 +6,7 @@
 #include <sqlite3.h>
 #include <stdlib.h>
 
+#include <filesystem>
 #include <fstream>  //NOLINT
 #include <iostream>
 
@@ -32,20 +33,23 @@ using lucyrt::graphic::TransformationMatrix;
 using lucyrt::graphic::Vertex;
 
 static std::vector<TexturePtr> AssimpLoadMaterialTextures(
-    aiMaterial *mat, aiTextureType type, const std::string &typeName) {
+    aiMaterial *mat, aiTextureType type, const std::string &directory) {
   std::vector<TexturePtr> textures;
+  std::filesystem::path dirpath(directory);
+  dirpath = std::filesystem::canonical(dirpath);
   for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
     aiString str;
     mat->GetTexture(type, i, &str);
     std::string filepath(str.C_Str());
-    TexturePtr tex = Texture::Load("../examples/" + filepath);
+    filepath = (dirpath / filepath).string();
+    TexturePtr tex = Texture::Load(filepath);
     textures.push_back(tex);
   }
   return textures;
 }
 
-static void AssimpProcessMesh(ModelPtr m, aiMesh *aMesh,
-                              const aiScene *aScene) {
+static void AssimpProcessMesh(ModelPtr m, aiMesh *aMesh, const aiScene *aScene,
+                              const std::string &directory) {
   const MeshPtr mesh = Mesh::New(aMesh->mName.C_Str());
 
   std::vector<Vertex> vertices;
@@ -84,8 +88,8 @@ static void AssimpProcessMesh(ModelPtr m, aiMesh *aMesh,
   shaders[0] = Shader::Compile("shader", Shaders_blinn_phong_vert,
                                Shaders_blinn_phong_frag);
   shaders[0]->diffuse = glm::vec4(aColor.r, aColor.g, aColor.b, 1.0f);
-  std::vector<TexturePtr> diffuse_maps = AssimpLoadMaterialTextures(
-      aMaterial, aiTextureType_DIFFUSE, "texture_diffuse");
+  std::vector<TexturePtr> diffuse_maps =
+      AssimpLoadMaterialTextures(aMaterial, aiTextureType_DIFFUSE, directory);
   if (diffuse_maps.size() > 0) {
     shaders[0]->diffuse_texture = diffuse_maps[0];
   }
@@ -96,20 +100,26 @@ static void AssimpProcessMesh(ModelPtr m, aiMesh *aMesh,
   m->meshes.push_back(mesh);
 }
 
-static void AssimpProcessNode(ModelPtr m, aiNode *aNode,
-                              const aiScene *aScene) {
+static void AssimpProcessNode(ModelPtr m, aiNode *aNode, const aiScene *aScene,
+                              const std::string &directory) {
   for (unsigned int i = 0; i < aNode->mNumMeshes; i++) {
     aiMesh *mesh = aScene->mMeshes[aNode->mMeshes[i]];
-    AssimpProcessMesh(m, mesh, aScene);
+    AssimpProcessMesh(m, mesh, aScene, directory);
   }
   for (unsigned int i = 0; i < aNode->mNumChildren; i++) {
-    AssimpProcessNode(m, aNode->mChildren[i], aScene);
+    AssimpProcessNode(m, aNode->mChildren[i], aScene, directory);
   }
 }
 
 ModelPtr Model::LoadWithAssimp(const std::string &name,
                                const std::string &filepath) {
   ModelPtr ptr = std::shared_ptr<Model>(new Model(name), Delete);
+
+  std::filesystem::path dirpath(filepath);
+  dirpath = dirpath.parent_path();
+  spdlog::info("{} starts loading {}, directory: {}", *ptr, filepath,
+               dirpath.string());
+
   Assimp::Importer importer;
   const aiScene *aScene =
       importer.ReadFile(filepath, aiProcess_Triangulate | aiProcess_FlipUVs |
@@ -119,7 +129,8 @@ ModelPtr Model::LoadWithAssimp(const std::string &name,
     spdlog::error("{} load from {} failed", *ptr, filepath);
     return ptr;
   }
-  AssimpProcessNode(ptr, aScene->mRootNode, aScene);
+
+  AssimpProcessNode(ptr, aScene->mRootNode, aScene, dirpath.string());
   spdlog::info("{} loaded from {}", *ptr, filepath);
   return ptr;
 }
@@ -229,7 +240,6 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
   for (int m = 0; m < number_of_meshes; m++) {
     std::string name = g_reader.ReadString();  // Use mesh category as mesh name
 
-    glm::vec4 diffuse(1.0f, 1.0f, 1.0f, 1.0f);
     int number_of_submeshes = g_reader.ReadInt();
     std::vector<ShaderPtr> shaders;
     std::vector<std::vector<GLuint>> submeshes;
