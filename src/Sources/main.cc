@@ -13,6 +13,15 @@ int main(int argc, const char** argv) {
     return -1;
   }
   App::Initialize(800, 600, "lucyrt");
+
+  TexturePtr cubemap = Texture::LoadCubemapFromInternal(
+      Textures_Skybox_right_jpg, Textures_Skybox_right_jpg_len,
+      Textures_Skybox_left_jpg, Textures_Skybox_left_jpg_len,
+      Textures_Skybox_top_jpg, Textures_Skybox_top_jpg_len,
+      Textures_Skybox_bottom_jpg, Textures_Skybox_bottom_jpg_len,
+      Textures_Skybox_front_jpg, Textures_Skybox_front_jpg_len,
+      Textures_Skybox_back_jpg, Textures_Skybox_back_jpg_len);
+  SkyboxPtr skybox = Skybox::New(cubemap);
   ModelPtr model;
   std::filesystem::path model_path(argv[1]);
   std::error_code error_code;
@@ -34,6 +43,7 @@ int main(int argc, const char** argv) {
     glCullFace(GL_BACK);
 
     model->Draw(ctx);
+    skybox->Draw(ctx);
   });
   return 0;
 }

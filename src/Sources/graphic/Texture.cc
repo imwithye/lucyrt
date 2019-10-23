@@ -38,7 +38,7 @@ TextureData::TextureData(const std::string& filepath) {
 }
 
 TextureData::TextureData(const unsigned char* raw_data, int len) {
-  stbi_set_flip_vertically_on_load(true);
+  // stbi_set_flip_vertically_on_load(true);
   int width = 0, height = 0, channels = 0;
   unsigned char* data =
       stbi_load_from_memory(raw_data, len, &width, &height, &channels, 4);
@@ -135,24 +135,25 @@ Texture::Texture(const std::string& name, const TextureData& right,
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGB, right.width_,
-               right.height_, 0, GL_RGB, GL_UNSIGNED_BYTE,
+  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGBA, right.width_,
+               right.height_, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                reinterpret_cast<const void*>(right.data_.data()));
-  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGB, left.width_,
-               left.height_, 0, GL_RGB, GL_UNSIGNED_BYTE,
+  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 1, 0, GL_RGBA, left.width_,
+               left.height_, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                reinterpret_cast<const void*>(left.data_.data()));
-  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGB, top.width_,
-               top.height_, 0, GL_RGB, GL_UNSIGNED_BYTE,
+  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 2, 0, GL_RGBA, top.width_,
+               top.height_, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                reinterpret_cast<const void*>(top.data_.data()));
-  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGB, bottom.width_,
-               bottom.height_, 0, GL_RGB, GL_UNSIGNED_BYTE,
+  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 3, 0, GL_RGBA, bottom.width_,
+               bottom.height_, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                reinterpret_cast<const void*>(bottom.data_.data()));
-  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGB, front.width_,
-               front.height_, 0, GL_RGB, GL_UNSIGNED_BYTE,
+  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 4, 0, GL_RGBA, front.width_,
+               front.height_, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                reinterpret_cast<const void*>(front.data_.data()));
-  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 0, 0, GL_RGB, back.width_,
-               back.height_, 0, GL_RGB, GL_UNSIGNED_BYTE,
+  glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + 5, 0, GL_RGBA, back.width_,
+               back.height_, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                reinterpret_cast<const void*>(back.data_.data()));
+  spdlog::trace("{} initialized", *this);
 }
 
 Texture::~Texture() {

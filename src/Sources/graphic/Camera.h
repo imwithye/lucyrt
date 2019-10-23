@@ -20,6 +20,7 @@ class Camera {
 
   Camera();
   glm::mat4 GetWorldToCamera() const;
+  glm::mat4 GetSkyboxMatrix() const;
   void Reset();
   void Tick();
   void OnGUI();

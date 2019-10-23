@@ -5,7 +5,15 @@
 
 using lucyrt::graphic::Context;
 using lucyrt::graphic::Skybox;
+using lucyrt::graphic::SkyboxPtr;
 using lucyrt::graphic::TexturePtr;
+
+SkyboxPtr Skybox::New(TexturePtr cubemap) {
+  SkyboxPtr ptr(new Skybox(cubemap), Delete);
+  return ptr;
+}
+
+void Skybox::Delete(Skybox* skybox) { delete skybox; }
 
 Skybox::Skybox(TexturePtr cubemap)
     : skybox_vertices_(108),
@@ -29,10 +37,12 @@ Skybox::Skybox(TexturePtr cubemap)
   glGenBuffers(1, &vbo_);
   glBindVertexArray(vao_);
   glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(skybox_vertices_), &skybox_vertices_,
-               GL_STATIC_DRAW);
-  glEnableVertexAttribArray(0);
+  glBufferData(GL_ARRAY_BUFFER, skybox_vertices_.size() * sizeof(float),
+               skybox_vertices_.data(), GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
 }
 
 Skybox::~Skybox() {
@@ -43,11 +53,12 @@ Skybox::~Skybox() {
 void Skybox::Draw(Context* ctx) {
   glDepthFunc(GL_LEQUAL);
   shader_->Use();
-  ctx->PrepareShader(shader_.get());
-  glBindVertexArray(vao_);
+  shader_->SetMat4("LUCYRT_WORLD_TO_CAMERA",
+                   ctx->GetCamera().GetSkyboxMatrix());
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_->GetId());
+  glBindVertexArray(vao_);
   glDrawArrays(GL_TRIANGLES, 0, 36);
-  glBindVertexArray(0);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
   glDepthFunc(GL_LESS);
 }

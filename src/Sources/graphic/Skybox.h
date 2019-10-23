@@ -12,8 +12,13 @@
 
 namespace lucyrt {
 namespace graphic {
+class Skybox;
+typedef std::shared_ptr<Skybox> SkyboxPtr;
+
 class Skybox {
  public:
+  static SkyboxPtr New(TexturePtr cubemap);
+  static void Delete(Skybox* skybox);
   void Draw(Context* ctx);
 
  private:
