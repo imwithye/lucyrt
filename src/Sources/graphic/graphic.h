@@ -10,5 +10,6 @@
 #include "Mesh.h"
 #include "Model.h"
 #include "Shader.h"
+#include "Skybox.h"
 #include "Texture.h"
 #include "TransformationMatrix.h"

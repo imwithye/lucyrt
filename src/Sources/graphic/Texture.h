@@ -59,6 +59,7 @@ class Texture {
     return os << "Texture[" << t.name << "(id:" << t.id_ << ")]";
   }
 
+  inline GLuint GetId() const { return id_; }
   void Active(GLenum uint);
 
  private:
