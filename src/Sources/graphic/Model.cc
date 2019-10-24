@@ -184,7 +184,8 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
 
     explicit MaterialReader(const std::filesystem::path &dirpath)
         : dirpath(dirpath), db(nullptr) {
-      sqlite3_open((dirpath / "data.vrc").c_str(), &db);
+      sqlite3_open(
+          reinterpret_cast<const char *>((dirpath / "data.vrc").c_str()), &db);
     }
 
     glm::vec4 ReadDiffuse(int id) {
@@ -231,7 +232,7 @@ ModelPtr Model::LoadWithVRcollab(const std::string &name,
       }
       std::string texture_name = main_tex["TextureName"];
       TexturePtr texture =
-          Texture::LoadFromFile(dirpath / "assets" / texture_name);
+          Texture::LoadFromFile((dirpath / "assets" / texture_name).string());
       sqlite3_finalize(stmt);
       return texture;
     }
